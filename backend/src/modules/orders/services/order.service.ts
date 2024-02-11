@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { ProductService } from 'src/modules/Product/services/product.service';
-// import { UserService } from 'src/modules/User/Services/user.service';
-import { UserService } from 'src/modules/User/services/user.service';
+import { ProductService } from 'src/modules/product/services/product.service';
+import { UserService } from 'src/modules/user/services/user.service';
 import { ItemCart } from '../dto/order.dto';
 import { OrderRepository } from '../repositories/coupon.repository';
 @Injectable()

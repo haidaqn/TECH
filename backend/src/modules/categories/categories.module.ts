@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BrandModule } from '../Brand/brand.module';
+import { BrandModule } from '../brand/brand.module';
 import { CategoriesController } from './controllers/categories.controller';
 import { CategoriesSchema } from './models/categories.model';
 import { CategoriesRepository } from './repositories/categories.repository';

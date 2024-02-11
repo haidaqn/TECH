@@ -4,8 +4,8 @@ import { OrderSchema } from './models/order.model';
 import { OrderRepository } from './repositories/coupon.repository';
 import { OrderService } from './services/order.service';
 import { OrderController } from './controllers/order.controller';
-import { UserModule } from '../User/user.module';
-import { ProductModule } from '../Product/product.module';
+import { UserModule } from '../user/user.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
     imports: [
