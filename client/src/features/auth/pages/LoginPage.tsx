@@ -19,12 +19,17 @@ import { authActions } from '../AuthSlice';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import authApi from '@/api/authApi';
 
 export function LoginPage() {
     const dispatch = useAppDispatch();
     const navitage = useNavigate();
     const { actionAuth, logging } = useAppSelector((state) => state.auth);
     const { toast } = useToast();
+    const [open, setOpen] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
     const schemaLogin = yup.object().shape({
         email: yup
             .string()
@@ -45,6 +50,34 @@ export function LoginPage() {
         },
     });
 
+    const handleForgotPassword = async () => {
+        setLoading(true);
+        try {
+            await authApi
+                .forgorPassword(email)
+                .then(() => {
+                    setLoading(false);
+                    toast({
+                        title: 'Gửi email cấp mật khẩu thành công !',
+                    });
+                    setOpen(false);
+                })
+                .catch(() => {
+                    setLoading(false);
+                    toast({
+                        title: 'Gửi email cấp mật khẩu thất bại !',
+                        variant: 'destructive',
+                    });
+                });
+        } catch (error: any) {
+            toast({
+                title: 'Gửi email cấp mật khẩu thất bại !',
+                description: error.message,
+                variant: 'destructive',
+            });
+        }
+    };
+
     const handleLogin: SubmitHandler<LoginForm> = (data) => {
         dispatch(authActions.login(data));
     };
@@ -60,50 +93,75 @@ export function LoginPage() {
     }, [actionAuth, toast]);
 
     return (
-        <Form {...formLogin}>
-            <form onSubmit={formLogin.handleSubmit(handleLogin)} className="space-y-4">
-                <FormField
-                    control={formLogin.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem className="px-1">
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Nhập tên email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={formLogin.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem className="px-1">
-                            <FormLabel>Mật khẩu</FormLabel>
-                            <FormControl>
-                                <InputPassword placeholder="Nhập mật khẩu" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div className="flex justify-between">
-                    <i
-                        onClick={() => {
-                            formLogin.reset();
-                            navitage('/auth/register');
-                        }}
-                        className="text-sm cursor-pointer hover:opacity-80"
-                    >
-                        Bạn chưa có tài khoản?
-                    </i>
-                    <i className="text-sm cursor-pointer hover:opacity-80">Quên mật khẩu?</i>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <Form {...formLogin}>
+                <form onSubmit={formLogin.handleSubmit(handleLogin)} className="space-y-4">
+                    <FormField
+                        control={formLogin.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem className="px-1">
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Nhập tên email" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={formLogin.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem className="px-1">
+                                <FormLabel>Mật khẩu</FormLabel>
+                                <FormControl>
+                                    <InputPassword placeholder="Nhập mật khẩu" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <div className="flex justify-between">
+                        <i
+                            onClick={() => {
+                                formLogin.reset();
+                                navitage('/auth/register');
+                            }}
+                            className="text-sm cursor-pointer hover:opacity-80"
+                        >
+                            Bạn chưa có tài khoản?
+                        </i>
+                        <i
+                            onClick={() => setOpen(true)}
+                            className="text-sm cursor-pointer hover:opacity-80"
+                        >
+                            Quên mật khẩu?
+                        </i>
+                    </div>
+                    <Button type="submit" disabled={logging} className="w-full">
+                        {logging && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />} Đăng nhập
+                    </Button>
+                </form>
+            </Form>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Nhập tài khoản của bạn</DialogTitle>
+                </DialogHeader>
+                <div className="flex gap-3">
+                    <Input
+                        className="p-2 flex-3"
+                        type="text"
+                        placeholder="Nhập email của bạn!"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Button onClick={() => handleForgotPassword()} className="uppercase p-2 flex-1">
+                        {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                        gửi
+                    </Button>
                 </div>
-                <Button type="submit" disabled={logging} className="w-full">
-                    {logging && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />} Đăng nhập
-                </Button>
-            </form>
-        </Form>
+            </DialogContent>
+        </Dialog>
     );
 }

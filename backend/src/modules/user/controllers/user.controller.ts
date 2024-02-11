@@ -37,6 +37,12 @@ export class UserController {
         const userID = (request.user._id as ObjectId).toString();
     }
 
+    @Post('forgotpassword')
+    async forogt(@Body() body: { email: string }) {
+        const { email } = body;
+        return await this.userService.forgotPassword(email);
+    }
+
     @UseGuards(AuthGuard('jwt'))
     @Post('updateInfo')
     async updateInfo(@Req() request: any, @Body() body: UpdateInfoUser) {

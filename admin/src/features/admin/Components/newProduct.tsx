@@ -1,14 +1,10 @@
 import { ArrowBackIosNew, CloudUpload, Delete, Replay, Visibility } from '@mui/icons-material';
-import { Backdrop, Box, Button, CircularProgress, Grid, IconButton, Input, Paper, Stack, Tab, Tabs, TextField } from '@mui/material';
+import { Backdrop, Box, Button, CircularProgress, Grid, IconButton, Input, Stack, Tab, Tabs } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import adminApi from '../../../apis/adminApi';
-import * as yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { CreateProduct } from '../../../models';
 import { AutoField } from '../../../Components/Common/AutoField';
+import adminApi from '../../../apis/adminApi';
 import { handlePrice } from '../../../utils';
 export interface searchRoot {
     id: number;
@@ -23,31 +19,24 @@ function a11yProps(index: number) {
 
 const NewProduct = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<string>();
     const [imagePreview, setImagePreview] = React.useState<string | null>(null);
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
     const [file, setFile] = React.useState<File | null>();
-    const [detail, setDetail] = React.useState<string>('');
     const imgRef = React.useRef<HTMLInputElement | null>(null);
     const [tabs, setTabs] = React.useState(0);
-    const [price, setPrice] = React.useState<string>('');
-    const [category, setCategory] = useState<searchRoot | null>(null);
+    const [categoryNew, setCategoryNew] = useState<searchRoot | null>(null);
     const [productData, setProductData] = useState({
         title: '',
         price: '',
         description: '',
-        brand: '',
         category: '',
         quantity: 0
     });
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
-    const handleDeleteImage = (value: string) => {
-        setImages((prev) => prev.filter((item) => item !== value));
-    };
     const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputElement = e.target;
-        // setIsLoading(false);
         if (inputElement.files) {
             const images = new FormData();
             const selectedFiles = inputElement.files;
@@ -58,68 +47,45 @@ const NewProduct = () => {
                 try {
                     const response = await adminApi.getUploadImages(images);
                     if (response.status === 200) {
-                        setImages((prev) => [...prev, response.data.secure_url]);
+                        setImages(response.data.secure_url);
                     }
                 } catch (err) {
                     console.log(err);
                 }
             }
-            setIsLoading(true);
         }
     };
-    const [nameProduct, setNameProduct] = React.useState<string>('');
-
-    const schema = yup.object().shape({
-        title: yup.string().required('Cần nhập tên của sản phẩm !'),
-        description: yup.string().required('Cần nhập mô tả sản phẩm'),
-        price: yup.number().required('Cần nhập giá của sản phẩm'),
-        category: yup.string().required('Cần chọn loại cho sản phẩm'),
-        thumb: yup.string().required('Cần có 1 ảnh cho sản phẩm'),
-        quantity: yup.number()
-    });
     const handleChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value;
-
         const sanitizedValue = rawValue.replace(/[^\d,]/g, '');
 
         // Convert comma-separated string to a numeric value
         const numericValue = parseFloat(sanitizedValue.replace(/,/g, ''));
         if (!isNaN(numericValue)) {
-            setPrice(handlePrice(numericValue));
+            setProductData((prev) => ({ ...prev, price: handlePrice(numericValue) }));
         } else {
-            setPrice('');
+            setProductData((prev) => ({ ...prev, price: '' }));
         }
     };
-    const form = useForm<CreateProduct>({
-        resolver: yupResolver(schema)
-    });
+
     const handleImageClick = () => {
         if (imgRef.current !== null && !imagePreview) {
             imgRef.current.click();
         }
     };
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedImage = event.target.files && event.target.files[0];
-        console.log(selectedImage);
-        if (selectedImage && event.target.files) {
-            setFile(event.target.files[0]);
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(selectedImage);
-        }
-    };
 
-    const handleChangeInput = (value: string, callback: (newVal: string) => void) => {
-        callback(value);
-    };
-    const handleCreateProduct: SubmitHandler<CreateProduct> = async (data: CreateProduct) => {
+    const handleCreateProduct = async () => {
         try {
             await adminApi
-                .createProduct(data)
+                .createProduct({
+                    thumb: images || '',
+                    title: productData.title,
+                    price: +productData.price,
+                    description: productData.description,
+                    category: categoryNew?.title || '',
+                    quantity: productData.quantity
+                })
                 .then(() => {
-                    form.reset();
                     enqueueSnackbar('Tạo sản phẩm thành công !', {
                         variant: 'success'
                     });
@@ -162,7 +128,7 @@ const NewProduct = () => {
                 >
                     Sản phẩm
                 </Button>
-                <IconButton onClick={() => {}} size="small" sx={{ mr: '5px' }}>
+                <IconButton onClick={() => handleCreateProduct()} size="small" sx={{ mr: '5px' }}>
                     <CloudUpload fontSize="small" />
                 </IconButton>
                 <IconButton size="small" sx={{ mr: '5px' }}>
@@ -188,8 +154,8 @@ const NewProduct = () => {
                                         fullWidth
                                         sx={{ height: '50px', fontSize: '25px', p: 0 }}
                                         placeholder="VD:Iphone 15 pro max"
-                                        value={nameProduct}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNameProduct(e.target.value)}
+                                        value={productData.title}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductData((prev) => ({ ...prev, title: e.target.value }))}
                                     />
                                     <div className="flex items-center mb-4 mt-3">
                                         <input
@@ -205,10 +171,10 @@ const NewProduct = () => {
                                 </div>
 
                                 <div onClick={handleImageClick} className="w-[150px] relative h-[150px] cursor-pointer border">
-                                    {imagePreview ? (
+                                    {images ? (
                                         <>
                                             <Backdrop sx={{ zIndex: '100' }} open={openBackDrop} onClick={() => setOpenBackDrop(false)}>
-                                                <img className="w-[400px] object-contain" src={imagePreview} alt="Preview" />
+                                                <img className="w-[400px] object-contain" src={images} alt="Preview" />
                                             </Backdrop>
                                             <Box
                                                 sx={{
@@ -219,14 +185,14 @@ const NewProduct = () => {
                                                     }
                                                 }}
                                             >
-                                                <img className="w-[100%] h-[100%] object-cover" src={imagePreview} alt="Preview" />
+                                                <img className="w-[100%] h-[100%] object-cover" src={images} alt="Preview" />
                                                 <div className="absolute tool-img top-0 left-0 hidden items-center justify-center w-[100%] h-[100%] bg-[rgba(0,0,0,0.5)] z-10">
                                                     <IconButton onClick={() => setOpenBackDrop(true)}>
                                                         <Visibility htmlColor="white" />
                                                     </IconButton>
                                                     <IconButton
                                                         onClick={() => {
-                                                            setImagePreview(null);
+                                                            setImages('');
                                                             setFile(null);
                                                         }}
                                                     >
@@ -243,7 +209,7 @@ const NewProduct = () => {
                                         hidden={true}
                                         type="file"
                                         id="imageInput"
-                                        onChange={handleImageChange}
+                                        onChange={(e) => handleFiles(e)}
                                         name="imageInput"
                                         accept="image/png, image/jpeg"
                                     ></input>
@@ -267,7 +233,29 @@ const NewProduct = () => {
                                                             </label>
                                                         </Grid>
                                                         <Grid item xs={8}>
-                                                            <AutoField value={category} setValue={setCategory} />
+                                                            <AutoField value={categoryNew} setValue={setCategoryNew} />
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Grid container spacing={2}>
+                                                        <Grid item xs={4}>
+                                                            <label htmlFor="type-food-select" className="font-medium ">
+                                                                Số lượng
+                                                            </label>
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            <div className="flex items-end">
+                                                                <input
+                                                                    value={productData.quantity}
+                                                                    type="string"
+                                                                    autoComplete="off"
+                                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                                        setProductData((prev) => ({ ...prev, quantity: +e.target.value }))
+                                                                    }
+                                                                    className="block px-0 w-[150px]   border-0 border-b-2 border-gray-200  dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200"
+                                                                />
+                                                            </div>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -283,7 +271,7 @@ const NewProduct = () => {
                                                                 đ
                                                                 <input
                                                                     id="name-food-select"
-                                                                    value={price}
+                                                                    value={productData.price}
                                                                     type="string"
                                                                     autoComplete="off"
                                                                     onChange={handleChangePrice}
@@ -301,8 +289,10 @@ const NewProduct = () => {
                                                 <textarea
                                                     id="message"
                                                     rows={4}
-                                                    value={detail}
-                                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChangeInput(e.target.value, setDetail)}
+                                                    value={productData.description}
+                                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                                        setProductData((prev) => ({ ...prev, description: e.target.value }))
+                                                    }
                                                     className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="Viết mô tả về sản phẩm..."
                                                 ></textarea>

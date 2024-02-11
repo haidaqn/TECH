@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { Comment } from '../dto/product.dto';
+import { Comment, ProductDto } from '../dto/product.dto';
 import { ProductRepository } from '../repositories/product.repository';
 @Injectable()
 export class ProductService {
@@ -97,6 +97,24 @@ export class ProductService {
             product.save();
             return true;
         } catch (error: any) {
+            throw new Error(error.message);
+        }
+    }
+
+    async createProduct(data: ProductDto) {
+        try {
+            const res = await this.productRepository.create(data);
+            return res ? true : false;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async updateProduct(data: ProductDto, id: string) {
+        try {
+            const res = await this.productRepository.findByIdAndUpdate(id, data);
+            return res ? true : false;
+        } catch (error) {
             throw new Error(error.message);
         }
     }

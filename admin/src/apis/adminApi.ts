@@ -12,12 +12,10 @@ const adminApi = {
         return axiosClient.get(url);
     },
     //done
-
     getAllCategories() {
         const url = `categories/getAll?limit=20&page=1`;
         return axiosClient.get(url);
     },
-
     // done
     getPagingProduct(page: PageConfig) {
         const url = `product/getAll?page=${page.pageIndex + 1}&limit=${page.pageSize}`;
@@ -39,21 +37,19 @@ const adminApi = {
         const url = 'product/create';
         return axiosClient.post(url, data);
     },
+
     deleteProduct(data: string[]) {
-        const url = 'admin/delete-products';
+        const url = 'product/delete';
         return axiosClient.delete(url, { data: data });
     },
-    deleteUser(data: string[]) {
-        const url = 'user/delete';
-        return axiosClient.delete(url, { data: data });
-    },
+
     getProduct(id: string) {
         const url = `product/${id}`;
         return axiosClient.get(url);
     },
     upDateProduct(pid: string, data: CreateProduct) {
-        const url = `admin/update-products/${pid}`;
-        return axiosClient.post(url, data);
+        const url = `product/update/${pid}`;
+        return axiosClient.patch(url, data);
     }
 };
 

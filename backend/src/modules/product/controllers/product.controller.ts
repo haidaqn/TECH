@@ -20,16 +20,21 @@ export class ProductController {
         return await this.productService.getDetailProduct(id);
     }
 
-    @Get('create')
-    async createProduct(data: ProductDto) {}
+    @Post('create')
+    async createProduct(@Body() body: ProductDto) {
+        return await this.productService.createProduct(body);
+    }
 
     @Delete('delete')
     async deleteProduct(@Body() body) {
-        return await this.productService.deleteMutipleProduct(body as string[]);
+        // console.log(body);
+        return await this.productService.deleteMutipleProduct(body);
     }
 
     @Patch('update/:id')
-    async updateProduct(@Param('id') id: string, @Body() data: ProductDto) {}
+    async updateProduct(@Param('id') id: string, @Body() data: ProductDto) {
+        return await this.productService.updateProduct(data, id);
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('updateRating')

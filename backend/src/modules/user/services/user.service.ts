@@ -4,10 +4,11 @@ import { Types } from 'mongoose';
 import { ChangePasswordUser, CreateUserDto, DataOrder, LoginUserDto, UpdateInfoUser } from '../dto/user.dto';
 import { User } from '../models/user.model';
 import { UserRepository } from '../repositories/user.repository';
+import { EmailService } from 'src/modules/email/email.service';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository, private readonly emailService: EmailService) {}
 
     async createUser(userDto: CreateUserDto) {
         userDto.password = await bcrypt.hash(userDto.password, 10);
@@ -192,19 +193,54 @@ export class UserService {
 
     changePassword = async (passwordData: ChangePasswordUser, userID: string) => {
         try {
-            const user = await this.userRepository.findById(userID)
-            if (!user) throw new Error("User not found")
-            const is_equal = bcrypt.compareSync(passwordData.oldPassword, user.password)
+            const user = await this.userRepository.findById(userID);
+            if (!user) throw new Error('User not found');
+            const is_equal = bcrypt.compareSync(passwordData.oldPassword, user.password);
             if (!is_equal || user.isBlocked) throw new Error('Old Password is incorrect');
             const passwordNew = await bcrypt.hash(passwordData.newPassword, 10);
             user.password = passwordNew;
-            await user.save()
-            return true; 
+            await user.save();
+            return true;
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-        
     };
+
+    forgotPassword = async (email: string) => {
+        try {
+            const user = await this.userRepository.findByCondition({ email: email });
+            if (!user) throw new Error('User not found');
+            const passNew = await this.generateRandomString(10);
+            const passHash = await bcrypt.hash(passNew, 10);
+            user.password = passHash;
+            await user
+                .save()
+                .then(async () => {
+                    const html = `Mật khẩu mới của bạn là ${passNew}`;
+                    const subject = 'Cấp lại mật khẩu';
+                    const data = {
+                        to: email,
+                        html,
+                        subject
+                    };
+                    await this.emailService.sendMail(data);
+                    return true;
+                })
+                .catch(() => false);
+        } catch (error) {
+            throw new Error('not found email');
+        }
+    };
+
+    private generateRandomString(length: number) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}[]|;:,.<>?';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
 
     private reverse(s: string) {
         return s.split('').reverse().join('');

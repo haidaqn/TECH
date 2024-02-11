@@ -1,32 +1,30 @@
-
 export interface Product {
-  _id: string
-  title: string
-  slug: string
-  description: string[]
-  thumb: string
-  price: number
-  category: string
-  quantity: number
-  sold: number
-  images: string[]
-  color: string
-  brand?:string
-  totalRatings: number
-  ratings: Rating[]
-  createdAt: string
-  updatedAt: string
-  __v: number
+    _id: string;
+    title: string;
+    slug: string;
+    description: string[];
+    thumb: string;
+    price: number;
+    category: string;
+    quantity: number;
+    sold: number;
+    images: string[];
+    color: string;
+    brand?: string;
+    totalRatings: number;
+    ratings: Rating[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
 }
 
 export interface Rating {
-  star: number
-  postedBy: string
-  comment: string
-  updateAt: string
-  _id: string
+    star: number;
+    postedBy: string;
+    comment: string;
+    updateAt: string;
+    _id: string;
 }
-
 
 export interface RootProduct {
     count: number;
@@ -35,16 +33,17 @@ export interface RootProduct {
 }
 
 export interface RootProductGet {
-  success : boolean
-  product :Product
+    success: boolean;
+    status: number;
+    message: string;
+    data: Product;
 }
 
-
 export interface CreateProduct {
-  title: string
-  description: string
-  price: number
-  category: string
-  quantity?: number
-  thumb: string
+    title: string;
+    description: string;
+    price: number;
+    category: string;
+    quantity: number;
+    thumb: string;
 }

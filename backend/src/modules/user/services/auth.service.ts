@@ -13,7 +13,7 @@ export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-        private readonly emailService: EmailService,
+        private readonly emailService: EmailService
     ) {}
 
     register = async (userDto: CreateUserDto, res: Response, req: Request) => {
