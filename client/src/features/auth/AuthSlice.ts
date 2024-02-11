@@ -1,4 +1,4 @@
-import { LoginForm, PayLoad, RegisterForm, User } from '@/models';
+import { LoginForm, PayLoad, User } from '@/models';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface AuthState {

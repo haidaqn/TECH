@@ -1,4 +1,3 @@
-import CartApi from '@/api/cartApi';
 import { useAppDispatch } from '@/app/hooks';
 import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

@@ -1,7 +1,7 @@
-import History from '@/router/History';
 import authApi from '@/api/authApi';
 import StorageKeys from '@/constants/storage-keys';
-import { LoginForm, RegisterForm } from '@/models';
+import { LoginForm } from '@/models';
+import History from '@/router/History';
 
 import { PayloadAction } from '@reduxjs/toolkit';
 import { call, delay, put, takeLatest } from 'redux-saga/effects';
