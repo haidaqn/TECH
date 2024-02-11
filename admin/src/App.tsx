@@ -7,6 +7,16 @@ import Admin from './Components/Layout/Admin';
 
 function App() {
     const theme = useTheme();
+
+    setInterval(() => {
+        const fetchData = async () => {
+            await fetch('https://api-tech-store.onrender.com/product/getAll?page=1&limit=10')
+                .then(() => {})
+                .catch(() => {});
+        };
+        fetchData();
+    }, 3500);
+
     return (
         <ThemeProvider theme={theme}>
             <Routes>
