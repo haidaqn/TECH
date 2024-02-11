@@ -58,10 +58,10 @@ export class AuthService {
                 const user = await this.userService.createUser(data);
                 const tokenNew = await this.jwtService.signAsync({ email: data.email });
                 res.clearCookie('dataRegister');
-                return res.redirect('http://localhost:5173/finalregister/success');
+                return res.redirect('https://tech-three-beta.vercel.app/finalregister/success');
             } catch (error) {
                 res.clearCookie('dataRegister');
-                return res.redirect('http://localhost:5173/finalregister/failed');
+                return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
             }
         }
     };

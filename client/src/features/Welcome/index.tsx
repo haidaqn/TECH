@@ -148,14 +148,14 @@ export default function Welcome() {
                             <span className="text-red-500">haidang02032003@gmail.com</span> để được
                             hướng dẫn và giải quyết!{' '}
                         </p>
-                        <a href="/store">
+                        <Link to="/store">
                             <Button
                                 className="w-[250px] h-[50px] border-black dark:border-white"
                                 variant={'outline'}
                             >
                                 Bắt đầu ngay!
                             </Button>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>

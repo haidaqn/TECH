@@ -13,6 +13,15 @@ import { AiFillCaretUp } from 'react-icons/ai';
 function App() {
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
+    setInterval(() => {
+        const fetchData = async () => {
+            await fetch('https://api-tech-store.onrender.com/product/getAll?page=1&limit=10')
+                .then(() => {})
+                .catch(() => {});
+        };
+        fetchData();
+    }, 3500);
+
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollTop = window.scrollY;
