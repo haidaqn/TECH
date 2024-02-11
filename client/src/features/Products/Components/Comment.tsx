@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Rating } from '@/models';
 import { renderStartNumber } from '@/utils';
 import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import * as dayjs from 'dayjs';
+// import * as dayjs from 'dayjs';
 
 export const Comment = (props: Rating) => {
     const { comment, postedBy, star, updateAt } = props;
@@ -27,7 +27,8 @@ export const Comment = (props: Rating) => {
                     </span>
                     <span className="flex gap-1">{renderStartNumber(star, 14)}</span>
                     <span className="text-sm font-medium">
-                        {dayjs(updateAt).format('DD-MM-YYYY')}
+                        {/* {dayjs(updateAt).format('DD-MM-YYYY')} */}
+                        {updateAt}
                     </span>
                     <span className="flex items-center mt-5">
                         {comment.length ? comment : 'Người dùng chưa để lại nhận xét!'}
