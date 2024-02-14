@@ -65,7 +65,11 @@ const NewProduct = () => {
         }
     };
 
-    const handleImageClick = () => {};
+    const handleImageClick = () => {
+        if (imgRef.current !== null) {
+            imgRef.current.click();
+        }
+    };
 
     const handleCreateProduct = async () => {
         setIsLoading(true);

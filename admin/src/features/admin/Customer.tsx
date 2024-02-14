@@ -166,7 +166,7 @@ export const Customer = () => {
             {
                 accessorKey: 'createdAt',
                 header: 'Ngày tạo',
-                Cell: ({ cell }) => <span>{dayjs(cell.row.original.createdAt).format('h:mm A DD/MM/YYYY')}</span>
+                Cell: ({ cell }) => <span>{cell.row.original.createdAt}</span>
             }
         ],
         []
