@@ -46,7 +46,7 @@ export class AuthService {
 
     finalRegister = async (tokenURL: string, req: Request, res: Response) => {
         try {
-            const cookie = req.cookies.dataRegister;
+            const cookie = req.cookies['dataRegister'];
             const dataRegister = JSON.parse(cookie) as unknown as CookieReq;
             const { data, token } = dataRegister;
             if (!cookie || token !== tokenURL) {
