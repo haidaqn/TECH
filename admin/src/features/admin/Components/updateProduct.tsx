@@ -67,7 +67,11 @@ const UpdateProduct = () => {
         }
     };
 
-    const handleImageClick = () => {};
+    const handleImageClick = () => {
+        if (imgRef.current !== null) {
+            imgRef.current.click();
+        }
+    };
 
     const handleUpdateProduct = async () => {
         if (productId)
