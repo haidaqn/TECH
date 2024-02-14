@@ -30,7 +30,7 @@ export class AuthService {
                 maxAge: 5 * 60 * 1000
             });
 
-            const verifyLink = `http://localhost:3000/auth/finalRegister/${token}`;
+            const verifyLink = `https://api-tech-store.onrender.com/auth/finalRegister/${token}`;
             const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký tài khoản của bạn. Link này sẽ hết hạn sau 5 phút kể từ bây giờ. <a href="${verifyLink}">Click here</a>`;
 
             const subject = 'Xác minh tài khoản';
@@ -52,7 +52,7 @@ export class AuthService {
         const { data, token } = dataRegister;
         if (!cookie || token !== tokenURL) {
             res.clearCookie('dataRegister');
-            return res.redirect('http://localhost:5173/finalregister/failed');
+            return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
         } else {
             try {
                 const user = await this.userService.createUser(data);
