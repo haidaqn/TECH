@@ -151,11 +151,10 @@ export const InvoicePaging = () => {
     }, [columnFilters, globalFilter, isDel, pagination.pageIndex, pagination.pageSize, sorting, isUpdate]);
     const columns = useMemo<MRT_ColumnDef<Invoice>[]>(
         () => [
-            // { accessorKey: '_id', header: 'ID' },
             {
-                accessorKey: 'orderBy.name',
+                accessorKey: 'orderBy',
                 header: 'Tên Khách hàng',
-                Cell: ({ cell }) => <span className="font-semibold">{cell.row.original.orderBy.name}</span>
+                Cell: ({ cell }) => <span className="font-semibold">{cell.row.original.orderBy ? cell.row.original.orderBy.name : 'Ẩn Danh'}</span>
             },
             {
                 accessorKey: 'status',
