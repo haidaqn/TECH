@@ -9,8 +9,7 @@ import { InputField, PasswordField } from '../../../Components/FormControls';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { LoginForm } from '../../../models';
 import { authActions } from '../AuthSlice';
-export interface LoginPageProps {}
-export function LoginPage(props: LoginPageProps) {
+export function LoginPage() {
     const logging = useAppSelector((state) => state.auth.logging);
     const actionAuth = useAppSelector((state) => state.auth.actionAuth);
     const { enqueueSnackbar } = useSnackbar();

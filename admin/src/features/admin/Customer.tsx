@@ -106,7 +106,7 @@ export const Customer = () => {
         const idData = row.map((item: any) => item.original._id);
         (async () => {
             try {
-                const res = await adminApi.deleteUser(idData);
+                await adminApi.deleteUser(idData);
                 enqueueSnackbar('Xóa thành công', { variant: 'success' });
                 setIsDel((item) => !item);
             } catch (error) {
