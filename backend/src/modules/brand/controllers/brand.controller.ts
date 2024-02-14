@@ -30,4 +30,9 @@ export class BrandController {
     async updateBrand(@Param('id') id: string, @Body() { title }: BrandDto) {
         return await this.brandService.UpdateBrand(id, title);
     }
+
+    @Get('hello')
+    async getHello() {
+        return await this.brandService.Hello();
+    }
 }

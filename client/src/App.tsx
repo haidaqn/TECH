@@ -9,9 +9,17 @@ import { NotFound } from './components/common';
 import Welcome from './features/Welcome';
 import { useEffect, useState } from 'react';
 import { AiFillCaretUp } from 'react-icons/ai';
+import authApi from './api/authApi';
 
 function App() {
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
+
+    setInterval(() => {
+        const fetchData = async () => {
+            await authApi.hello();
+        };
+        fetchData();
+    }, 5 * 60 * 1000);
 
     useEffect(() => {
         const handleScroll = () => {

@@ -78,4 +78,9 @@ export class BrandService {
             message: 'Brand deletion failed'
         };
     }
+
+    async Hello() {
+        return 'Hello Tech Store';
+    }
 }
+
