@@ -23,8 +23,9 @@ export class AuthService {
             const token = await this.makeToken();
             const cookieHeader = JSON.stringify({ data: userDto, token });
             res.cookie('dataRegister', cookieHeader, {
-                sameSite: 'lax',
                 httpOnly: true,
+                sameSite: 'none',
+                secure: true,
                 maxAge: 5 * 60 * 1000
             });
 
