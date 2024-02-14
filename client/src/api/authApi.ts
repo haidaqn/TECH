@@ -22,7 +22,7 @@ const authApi = {
         return axiosClient.post(url, { email });
     },
     hello() {
-        const url = 'bradn/hello';
+        const url = 'brand/hello';
         return axiosClient.get(url);
     },
 };
