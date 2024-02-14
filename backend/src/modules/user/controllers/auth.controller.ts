@@ -16,7 +16,7 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
         @Req() req: Request
     ) {
-        return this.authService.register(createUserDto, res, req);
+        return await this.authService.register(createUserDto, res, req);
     }
 
     @Get('finalRegister/:token')

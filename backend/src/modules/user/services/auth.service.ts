@@ -21,9 +21,7 @@ export class AuthService {
             const user = await this.checkEmailUser(userDto.email);
             if (user.success === true) throw new Error('Tài khoản đã tồn tại');
             const token = await this.makeToken();
-
             const cookieHeader = JSON.stringify({ data: userDto, token });
-
             res.cookie('dataRegister', cookieHeader, {
                 sameSite: 'lax',
                 httpOnly: true,
@@ -47,22 +45,26 @@ export class AuthService {
     };
 
     finalRegister = async (tokenURL: string, req: Request, res: Response) => {
-        const cookie = req.cookies.dataRegister;
-        const dataRegister = JSON.parse(cookie) as unknown as CookieReq;
-        const { data, token } = dataRegister;
-        if (!cookie || token !== tokenURL) {
-            res.clearCookie('dataRegister');
-            return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
-        } else {
-            try {
-                const user = await this.userService.createUser(data);
-                const tokenNew = await this.jwtService.signAsync({ email: data.email });
-                res.clearCookie('dataRegister');
-                return res.redirect('https://tech-three-beta.vercel.app/finalregister/success');
-            } catch (error) {
+        try {
+            const cookie = req.cookies.dataRegister;
+            const dataRegister = JSON.parse(cookie) as unknown as CookieReq;
+            const { data, token } = dataRegister;
+            if (!cookie || token !== tokenURL) {
                 res.clearCookie('dataRegister');
                 return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
+            } else {
+                try {
+                    const user = await this.userService.createUser(data);
+                    const tokenNew = await this.jwtService.signAsync({ email: data.email });
+                    res.clearCookie('dataRegister');
+                    return res.redirect('https://tech-three-beta.vercel.app/finalregister/success');
+                } catch (error) {
+                    res.clearCookie('dataRegister');
+                    return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
+                }
             }
+        } catch (error) {
+            return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
         }
     };
 
