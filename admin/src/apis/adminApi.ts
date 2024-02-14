@@ -2,7 +2,6 @@ import axios from 'axios';
 import { CreateProduct, PageConfig } from '../models';
 import axiosClient from './axiosClient';
 const adminApi = {
-    // done
     getAllUser(page: PageConfig) {
         const url = `user/getAll?page=${page.pageIndex + 1}&limit=${page.pageSize}`;
         return axiosClient.get(url);
@@ -11,12 +10,21 @@ const adminApi = {
         const url = `order/admin/getAll?page=${page.pageIndex + 1}&limit=${page.pageSize}`;
         return axiosClient.get(url);
     },
-    //done
+
+    hello() {
+        const url = 'brand/hello';
+        return axiosClient.get(url);
+    },
     getAllCategories() {
         const url = `categories/getAll?limit=20&page=1`;
         return axiosClient.get(url);
     },
-    // done
+
+    deleteUser(data: [string]) {
+        const url = 'user/delete';
+        return axiosClient.delete(url, { data });
+    },
+
     getPagingProduct(page: PageConfig) {
         const url = `product/getAll?page=${page.pageIndex + 1}&limit=${page.pageSize}`;
         return axiosClient.get(url);

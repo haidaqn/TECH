@@ -105,8 +105,8 @@ export const InvoicePaging = () => {
         setOpen((prevOpen) => !prevOpen);
     };
     const handleSelectRows = (row: any) => {
-        // console.log(row);
         const idData = row.map((item: any) => item.original.id);
+        console.log(idData);
         (async () => {
             try {
                 // await adminApi.deleteFood(idData);

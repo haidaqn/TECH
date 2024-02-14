@@ -20,8 +20,9 @@ export class UserController {
     }
 
     @Delete('delete')
-    async deleteMultipleUser(@Body() body) {
-        return await this.userService.deleteMultipleUsers(body as string[]);
+    async deleteMultipleUser(@Body() body: string[]) {
+        console.log(body);
+        return await this.userService.deleteMultipleUsers(body);
     }
 
     @UseGuards(AuthGuard('jwt'))

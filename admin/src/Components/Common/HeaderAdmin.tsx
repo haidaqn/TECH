@@ -3,19 +3,16 @@ import { Avatar, IconButton, Stack, Tooltip } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import avtDefault from '../../assets/img_default.jpg';
-import { InvoiceList, ProductList } from '../../constants';
-import { MenuAdmin } from './MenuAdmin';
 import { useAppDispatch } from '../../app/hooks';
+import avtDefault from '../../assets/img_default.jpg';
+import { InvoiceList } from '../../constants';
 import { authActions } from '../../features/auth/AuthSlice';
+import { MenuAdmin } from './MenuAdmin';
 
 export function HeaderAdmin() {
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useAppDispatch();
-    const [openOrder, setOpenOrder] = useState(false);
     const [openInvoice, setOpenInvoice] = useState(false);
-    const [openProduct, setOpenProduct] = useState(false);
-    const [openConfig, setOpenConfig] = useState(false);
     const [hovered, setHovered] = useState(false);
     const navigate = useNavigate();
     const handleMoveHome = () => {

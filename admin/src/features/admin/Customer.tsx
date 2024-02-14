@@ -1,15 +1,14 @@
 import { Delete, Settings } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
+import * as dayjs from 'dayjs';
 import { MaterialReactTable, type MRT_ColumnDef, type MRT_ColumnFiltersState, type MRT_PaginationState, type MRT_SortingState } from 'material-react-table';
 import { useSnackbar } from 'notistack';
-import queryString from 'query-string';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import History from '../../Router/History';
 import adminApi from '../../apis/adminApi';
 import { ListResponse, User } from '../../models';
 import SettingMenu from './Components/SettingMenu';
-import * as dayjs from 'dayjs';
 
 interface CustomDialogProps {
     open: boolean;
@@ -108,7 +107,6 @@ export const Customer = () => {
         (async () => {
             try {
                 const res = await adminApi.deleteUser(idData);
-                console.log(res);
                 enqueueSnackbar('Xóa thành công', { variant: 'success' });
                 setIsDel((item) => !item);
             } catch (error) {
@@ -135,7 +133,7 @@ export const Customer = () => {
             History.push({ search: updatedSearchParams.toString() });
             try {
                 const res = (await adminApi.getAllUser(pagination)) as unknown as ListResponse;
-                console.log(res)
+                console.log(res);
                 setData(res.data);
                 setRowCount(res.count_page * pagination.pageSize);
             } catch (error) {

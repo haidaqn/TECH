@@ -1,4 +1,4 @@
-import { VisibilityOff, Visibility } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import { useState } from 'react';
 
@@ -11,7 +11,7 @@ export interface PasswordFieldProps {
 }
 
 export function PasswordField(props: PasswordFieldProps) {
-    const { name, label, disabled = false } = props;
+    const { name, label } = props;
     const form = useFormContext();
 
     const [showPassword, setShowPassword] = useState(false);

@@ -44,6 +44,7 @@ export function AutoField(props: AutoFieldProps) {
             id="controlled-demo"
             value={value}
             onChange={(event: React.SyntheticEvent, newValue: searchRoot | null) => {
+                console.log(event);
                 setValue(newValue);
             }}
             isOptionEqualToValue={(option, value) => option.id === value.id}

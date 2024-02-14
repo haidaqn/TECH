@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AutoField } from '../../../Components/Common/AutoField';
 import adminApi from '../../../apis/adminApi';
-import { handlePrice } from '../../../utils';
 import { RootProductGet } from '../../../models';
+import { handlePrice } from '../../../utils';
 export interface searchRoot {
     id: number;
     title: string;
@@ -22,11 +22,8 @@ const UpdateProduct = () => {
     const { productId } = useParams();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [images, setImages] = useState<string>();
-    const [imagePreview, setImagePreview] = React.useState<string | null>(null);
     const [openBackDrop, setOpenBackDrop] = React.useState(false);
-    const [file, setFile] = React.useState<File | null>();
     const imgRef = React.useRef<HTMLInputElement | null>(null);
-    const [tabs, setTabs] = React.useState(0);
     const [categoryNew, setCategoryNew] = useState<searchRoot | null>(null);
     const [productData, setProductData] = useState({
         title: '',
@@ -70,15 +67,12 @@ const UpdateProduct = () => {
         }
     };
 
-    const handleImageClick = () => {
-        if (imgRef.current !== null && !imagePreview) {
-            imgRef.current.click();
-        }
-    };
+    const handleImageClick = () => {};
 
     const handleUpdateProduct = async () => {
         if (productId)
             try {
+                setIsLoading(true);
                 await adminApi
                     .upDateProduct(productId, {
                         thumb: images || '',
@@ -89,16 +83,19 @@ const UpdateProduct = () => {
                         quantity: productData.quantity
                     })
                     .then(() => {
+                        setIsLoading(false)
                         enqueueSnackbar('Sửa sản phẩm thành công !', {
                             variant: 'success'
                         });
                     })
                     .catch(() => {
+                        setIsLoading(false)
                         enqueueSnackbar('Sửa không thành công !', {
                             variant: 'error'
                         });
                     });
             } catch (error) {
+                setIsLoading(false)
                 enqueueSnackbar('Sửa không thành công !', {
                     variant: 'error'
                 });
@@ -214,7 +211,6 @@ const UpdateProduct = () => {
                                                     <IconButton
                                                         onClick={() => {
                                                             setImages('');
-                                                            setFile(null);
                                                         }}
                                                     >
                                                         <Delete htmlColor="white" />
@@ -242,84 +238,82 @@ const UpdateProduct = () => {
                                         <Tab label="Thông tin sản phẩm" {...a11yProps(0)} />
                                     </Tabs>
                                 </Box>
-                                <div hidden={tabs !== 0}>
-                                    {tabs === 0 && (
-                                        <Box sx={{ padding: '20px 15px' }}>
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={6}>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={4}>
-                                                            <label htmlFor="type-food-select" className="font-medium ">
-                                                                Loại sản phẩm
-                                                            </label>
-                                                        </Grid>
-                                                        <Grid item xs={8}>
-                                                            <AutoField value={categoryNew} setValue={setCategoryNew} />
-                                                        </Grid>
+                                <div>
+                                    <Box sx={{ padding: '20px 15px' }}>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={6}>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={4}>
+                                                        <label htmlFor="type-food-select" className="font-medium ">
+                                                            Loại sản phẩm
+                                                        </label>
                                                     </Grid>
-                                                </Grid>
-                                                <Grid item xs={6}>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={4}>
-                                                            <label htmlFor="type-food-select" className="font-medium ">
-                                                                Số lượng
-                                                            </label>
-                                                        </Grid>
-                                                        <Grid item xs={8}>
-                                                            <div className="flex items-end">
-                                                                <input
-                                                                    value={productData.quantity}
-                                                                    type="string"
-                                                                    autoComplete="off"
-                                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                                        setProductData((prev) => ({ ...prev, quantity: +e.target.value }))
-                                                                    }
-                                                                    className="block px-0 w-[150px]   border-0 border-b-2 border-gray-200  dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200"
-                                                                />
-                                                            </div>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Grid>
-                                                <Grid item xs={6}>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={4}>
-                                                            <label htmlFor="name-food-select" className="font-medium ">
-                                                                Đơn giá
-                                                            </label>
-                                                        </Grid>
-                                                        <Grid item xs={8}>
-                                                            <div className="flex items-end">
-                                                                đ
-                                                                <input
-                                                                    id="name-food-select"
-                                                                    value={productData.price}
-                                                                    type="string"
-                                                                    autoComplete="off"
-                                                                    onChange={handleChangePrice}
-                                                                    className="block px-0 w-[150px]   border-0 border-b-2 border-gray-200  dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200"
-                                                                />
-                                                            </div>
-                                                        </Grid>
+                                                    <Grid item xs={8}>
+                                                        <AutoField value={categoryNew} setValue={setCategoryNew} />
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                            <Box sx={{ mt: '30px' }}>
-                                                <label htmlFor="message" className="block mb-2  font-medium text-gray-900 dark:text-white">
-                                                    Mô tả sản phẩm
-                                                </label>
-                                                <textarea
-                                                    id="message"
-                                                    rows={4}
-                                                    value={productData.description}
-                                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                                                        setProductData((prev) => ({ ...prev, description: e.target.value }))
-                                                    }
-                                                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                    placeholder="Viết mô tả về sản phẩm..."
-                                                ></textarea>
-                                            </Box>
+                                            <Grid item xs={6}>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={4}>
+                                                        <label htmlFor="type-food-select" className="font-medium ">
+                                                            Số lượng
+                                                        </label>
+                                                    </Grid>
+                                                    <Grid item xs={8}>
+                                                        <div className="flex items-end">
+                                                            <input
+                                                                value={productData.quantity}
+                                                                type="string"
+                                                                autoComplete="off"
+                                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                                                    setProductData((prev) => ({ ...prev, quantity: +e.target.value }))
+                                                                }
+                                                                className="block px-0 w-[150px]   border-0 border-b-2 border-gray-200  dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200"
+                                                            />
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={4}>
+                                                        <label htmlFor="name-food-select" className="font-medium ">
+                                                            Đơn giá
+                                                        </label>
+                                                    </Grid>
+                                                    <Grid item xs={8}>
+                                                        <div className="flex items-end">
+                                                            đ
+                                                            <input
+                                                                id="name-food-select"
+                                                                value={productData.price}
+                                                                type="string"
+                                                                autoComplete="off"
+                                                                onChange={handleChangePrice}
+                                                                className="block px-0 w-[150px]   border-0 border-b-2 border-gray-200  dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200"
+                                                            />
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Box sx={{ mt: '30px' }}>
+                                            <label htmlFor="message" className="block mb-2  font-medium text-gray-900 dark:text-white">
+                                                Mô tả sản phẩm
+                                            </label>
+                                            <textarea
+                                                id="message"
+                                                rows={4}
+                                                value={productData.description}
+                                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                                                    setProductData((prev) => ({ ...prev, description: e.target.value }))
+                                                }
+                                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Viết mô tả về sản phẩm..."
+                                            ></textarea>
                                         </Box>
-                                    )}
+                                    </Box>
                                 </div>
                             </div>
                         </div>

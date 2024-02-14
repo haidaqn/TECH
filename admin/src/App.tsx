@@ -4,18 +4,17 @@ import { LoginPage } from './features/auth/pages/LoginPage';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectAdmin, ProtectAuth } from './Components/ProtectRouter';
 import Admin from './Components/Layout/Admin';
+import adminApi from './apis/adminApi';
 
 function App() {
     const theme = useTheme();
 
     setInterval(() => {
         const fetchData = async () => {
-            await fetch('https://api-tech-store.onrender.com/product/getAll?page=1&limit=10')
-                .then(() => {})
-                .catch(() => {});
+            await adminApi.hello();
         };
         fetchData();
-    }, 3500);
+    }, 5 * 60 * 1000);
 
     return (
         <ThemeProvider theme={theme}>
