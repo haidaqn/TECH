@@ -10,7 +10,6 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Textarea } from '../ui/textarea';
 import { useToast } from '../ui/use-toast';
-import { boolean, isSchema } from 'yup';
 export const PurchaseItem = ({
     products,
     total,
