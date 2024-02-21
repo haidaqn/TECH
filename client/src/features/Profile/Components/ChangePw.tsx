@@ -44,22 +44,18 @@ export const ChangePassword = () => {
     ) => {
         try {
             setLoading(true);
-            await authApi
-                .changePassword(data)
-                .then(() => {
-                    setLoading(false);
-                    toast({
-                        title: 'Đổi mật khẩu thành công !',
-                    });
-                })
-                .catch((error: any) => {
-                    setLoading(false);
-                    toast({
-                        title: 'Đổi mật khẩu thất bại !',
-                        description: error.message,
-                        variant: 'destructive',
-                    });
+            const res = (await authApi.changePassword(data)) as unknown as Boolean;
+            if (res) {
+                toast({
+                    title: 'Đổi mật khẩu thành công !',
                 });
+            } else {
+                toast({
+                    title: 'Đổi mật khẩu thất bại !',
+                    variant: 'destructive',
+                });
+            }
+            setLoading(false);
         } catch (error: any) {
             setLoading(false);
             toast({
@@ -72,7 +68,7 @@ export const ChangePassword = () => {
 
     return (
         <div className="flex flex-col w-full gap-5">
-            <h1 className="pb-3 border-b-2">Thay đổi mật khẩu</h1>
+            <h1 className="pb-3 border-b-2 text-xl font-bold">Thay đổi mật khẩu</h1>
             <div className="w-1/2">
                 <Form {...form}>
                     <form className="space-y-2" onSubmit={form.handleSubmit(handleChangePassword)}>

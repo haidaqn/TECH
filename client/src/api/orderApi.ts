@@ -17,6 +17,10 @@ const orderApi = {
         const url = `order/user/getAll?${validQueryParams}`;
         return axiosClient.get(url);
     },
+    changeOrder(orderID: string) {
+        const url = 'order/change-order';
+        return axiosClient.post(url, { orderID });
+    }
 };
 
 export default orderApi;

@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { BaseModel, Product, QuerryProduct } from '@/models';
 import History from '@/router/History';
+import { useSearchContext } from '@/router/SearchProvider';
 import { Color, generateRange } from '@/utils';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
@@ -25,7 +26,7 @@ import { useLocation } from 'react-router-dom';
 const Products = () => {
     const location = useLocation();
     const { data } = useAppSelector((state) => state.categories);
-
+    const { searchQuery } = useSearchContext();
     const [productData, setProductData] = useState<Product[]>([]);
     const [openSelectPrice, setOpenSelectPrice] = useState<boolean>(false);
     const [openSelectColor, setOpenSelectColor] = useState<boolean>(false);
@@ -35,10 +36,12 @@ const Products = () => {
     const urlRouter = new URLSearchParams(location.search);
 
     const [isLoading, setLoading] = useState<boolean>(false);
+
     const [query, setQuery] = useState<QuerryProduct>({
         page: 1,
         limit: 8,
         category: urlRouter.get('category') || undefined,
+        search: urlRouter.get('search') || undefined,
     });
 
     useEffect(() => {
@@ -48,6 +51,10 @@ const Products = () => {
             updatedSearchParmas.set('limit', `${query.limit}`);
             const categoryURL = updatedSearchParmas.get('category');
             let shouldUpdateQuery = false;
+            if (searchQuery) {
+                setQuery((prev: QuerryProduct) => ({ ...prev, search: searchQuery }));
+                updatedSearchParmas.set('search', `${query.search}`);
+            }
             if (query.priceTo) updatedSearchParmas.set('priceTo', `${query.priceTo}`);
             else updatedSearchParmas.delete('priceTo');
             if (query.priceEnd) updatedSearchParmas.set('priceEnd', `${query.priceEnd}`);
@@ -74,6 +81,7 @@ const Products = () => {
             History.push({ search: updatedSearchParmas.toString() });
             setLoading(true);
             try {
+                console.log(query);
                 const response: unknown = await ProductApi.getProduct(query);
                 const responseNew = response as BaseModel<Product>;
                 setTotalCount(responseNew.count_page);
@@ -86,7 +94,15 @@ const Products = () => {
             }
         };
         fetchData();
-    }, [query.page, query.priceTo, query.priceEnd, query.color, query.category]);
+    }, [
+        query.page,
+        query.priceTo,
+        query.priceEnd,
+        query.color,
+        query.category,
+        query.search,
+        searchQuery,
+    ]);
 
     const breadcrumbs: PathItem[] = [
         {
@@ -287,7 +303,6 @@ const Products = () => {
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <div className="border">filter</div>
                 </div>
                 {isLoading ? (
                     <div className="w-[20vw] relative flex items-center justify-center h-[40vh]">

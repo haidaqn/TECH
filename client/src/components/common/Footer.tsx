@@ -1,11 +1,32 @@
+import authApi from '@/api/authApi';
+import { useState } from 'react';
 import { AiOutlineMail } from 'react-icons/ai';
 import { FaCcDinersClub, FaCcDiscover, FaCcMastercard, FaCcPaypal } from 'react-icons/fa';
 import { IoLocationOutline } from 'react-icons/io5';
 import { RiVisaLine } from 'react-icons/ri';
 import { SiAmericanexpress } from 'react-icons/si';
 import { Input } from '../ui/input';
+import { useToast } from '../ui/use-toast';
 
 export const Footer = () => {
+    const { toast } = useToast();
+    const [email, setEmail] = useState<string>('');
+
+    const handleBlur = async () => {
+        const res = await authApi.sendmail(email);
+        if (res) {
+            setEmail('')
+            toast({
+                title: 'Đăng ký nhận thông báo thành công !',
+            });
+        } else {
+            toast({
+                title: 'Đăng ký nhận thông báo thất bại !',
+                variant: 'destructive',
+            });
+        }
+    };
+
     return (
         <div className="">
             <div className="bg-[#ee3131]">
@@ -16,7 +37,10 @@ export const Footer = () => {
                     </div>
                     <div className="relative">
                         <Input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             type="text"
+                            onBlur={() => handleBlur()}
                             className="w-[450px] py-6 rounded-xl placeholder:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white text-white"
                             placeholder="example@gmail.com"
                         />

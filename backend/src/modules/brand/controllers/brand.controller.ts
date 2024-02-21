@@ -33,6 +33,6 @@ export class BrandController {
 
     @Get('hello')
     async getHello() {
-        return await this.brandService.Hello();
+        return 'Hello Tech Store';
     }
 }

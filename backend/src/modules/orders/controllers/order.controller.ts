@@ -36,4 +36,12 @@ export class OrderController {
     async deleteMutipleOrder(@Body() body) {
         return await this.orderService.deleteMutipleOrder(body as string[]);
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('change-order')
+    async changeOrderByUser(@Req() request: any, @Body() body: { orderID: string }) {
+        const { orderID } = body;
+        const userId = (request.user._id as ObjectId).toString();
+        return await this.orderService.CancellOrderByUser(userId,orderID)
+    }
 }

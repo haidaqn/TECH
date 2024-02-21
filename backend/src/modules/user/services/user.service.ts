@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
+import { EmailService } from 'src/modules/email/email.service';
 import { ChangePasswordUser, CreateUserDto, DataOrder, LoginUserDto, UpdateInfoUser } from '../dto/user.dto';
 import { User } from '../models/user.model';
 import { UserRepository } from '../repositories/user.repository';
-import { EmailService } from 'src/modules/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -196,7 +196,7 @@ export class UserService {
             const user = await this.userRepository.findById(userID);
             if (!user) throw new Error('User not found');
             const is_equal = bcrypt.compareSync(passwordData.oldPassword, user.password);
-            if (!is_equal || user.isBlocked) throw new Error('Old Password is incorrect');
+            if (!is_equal || user.isBlocked) return false;
             const passwordNew = await bcrypt.hash(passwordData.newPassword, 10);
             user.password = passwordNew;
             await user.save();

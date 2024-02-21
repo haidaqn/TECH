@@ -10,9 +10,19 @@ export class ProductController {
 
     @Get('getAll')
     async getAllProduct(
-        @Query() { page, limit, title, priceTo, priceEnd, color, sold, category }: PaginationProductDto
+        @Query() { page, limit, title, priceTo, priceEnd, color, sold, category, search }: PaginationProductDto
     ) {
-        return await this.productService.getAllProduct(page, limit, title, priceTo, priceEnd, color, category, sold);
+        return await this.productService.getAllProduct(
+            page,
+            limit,
+            title,
+            priceTo,
+            priceEnd,
+            color,
+            category,
+            sold,
+            search
+        );
     }
 
     @Get(':id')

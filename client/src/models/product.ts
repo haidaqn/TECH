@@ -7,6 +7,7 @@ export interface QuerryProduct {
     sold?: boolean;
     color?: string;
     category?: string;
+    search?: string;
 }
 
 export interface UserComment {

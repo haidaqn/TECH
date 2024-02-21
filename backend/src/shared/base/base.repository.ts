@@ -45,7 +45,7 @@ export class BaseRepository<T extends Document> {
     }
 
     async findByConditionAndUpdate(filter, update) {
-        return this.model.findOneAndUpdate(filter as FilterQuery<T>, update);
+        return this.model.findOneAndUpdate(filter as FilterQuery<T>, update,{new:true});
     }
 
     async updateMany(filter, update, option?: any | null) {

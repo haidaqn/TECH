@@ -25,6 +25,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 export const Purcharse = () => {
     const location = useLocation();
     const { toast } = useToast();
+    const [isCheck,setIsCheck] = useState<boolean>(false)
     const [query, setQuery] = useState<PagingOrder>({
         page: 1,
         limit: 5,
@@ -32,6 +33,7 @@ export const Purcharse = () => {
     });
     const [dataOrder, setDataOrder] = useState<ProductOrder[]>();
     const [totalCount, setTotalCount] = useState<number>(0);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,6 +43,7 @@ export const Purcharse = () => {
             updatedSearchParmas.set('status', `${query.status}`);
             History.push({ search: updatedSearchParmas.toString() });
             try {
+                console.log(query)
                 const res = (await orderApi.getOrderStatus(query)) as unknown as ListResponse;
                 setDataOrder(res.data);
                 setTotalCount(res.count_page);
@@ -53,7 +56,7 @@ export const Purcharse = () => {
             }
         };
         fetchData();
-    }, [query.status, query.page]);
+    }, [query.status, query.page,isCheck]);
     return (
         <div className="flex flex-col gap-5">
             <NavigationMenu>
@@ -110,10 +113,13 @@ export const Purcharse = () => {
                         <div className="flex flex-col gap-4">
                             {dataOrder.map((order) => (
                                 <PurchaseItem
+                                    isCheck={isCheck}
+                                    setIsCheck={setIsCheck}
                                     products={order.products}
                                     total={order.total}
                                     key={order._id}
                                     status={order.status}
+                                    orderID={order._id}
                                 />
                             ))}
                         </div>

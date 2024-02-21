@@ -13,9 +13,17 @@ export class ProductService {
         priceEnd?: number,
         color?: string,
         category?: string,
-        sold: boolean = false
+        sold: boolean = false,
+        search?: string
     ) {
         const searchCondition: any = {};
+        if (search !== undefined && search.trim() !== '') {
+            searchCondition.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { category: { $regex: search, $options: 'i' } },
+                { color: { $regex: search, $options: 'i' } }
+            ];
+        }
         if (title) searchCondition.title = { $regex: title, $options: 'i' };
         if (priceTo || priceEnd) {
             searchCondition.price = {};
@@ -23,7 +31,7 @@ export class ProductService {
             if (priceEnd) searchCondition.price.$lte = priceEnd;
         }
         if (color) searchCondition.color = { $regex: color, $options: 'i' };
-        if (category) searchCondition.category = { $regex: category, $options: 'i' };
+        if (category && !search) searchCondition.category = { $regex: category, $options: 'i' };
 
         try {
             const sortCondition = sold

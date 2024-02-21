@@ -8,7 +8,7 @@ import { UserService } from '../services/user.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private userService :UserService) {}
+    constructor(private readonly authService: AuthService, private userService: UserService) {}
 
     @Post('register')
     async register(
@@ -51,7 +51,12 @@ export class AuthController {
     @Post('changepassword')
     async changePassword(@Body() body: ChangePasswordUser, @Req() request: any) {
         const userID = (request.user._id as ObjectId).toString();
-        if(body.enterNewPassword !== body.newPassword) throw new Error('password incorrect');
-        return await this.userService.changePassword(body, userID)
+        if (body.enterNewPassword !== body.newPassword) throw new Error('password incorrect');
+        return await this.userService.changePassword(body, userID);
+    }
+
+    @Post('sendmail-toast')
+    async sendMailToast(@Body() { data }: { data: string }) {
+        return await this.authService.sendMailToast(data);
     }
 }

@@ -127,4 +127,23 @@ export class OrderService {
             throw new Error(error.message);
         }
     }
+
+    async CancellOrderByUser(userID: string, orderID: string) {
+        try {
+            const orderChange = await this.orderRepository.findByConditionAndUpdate(
+                {
+                    _id: orderID,
+                    orderBy: userID,
+                    status: { $in: ['Processing', 'Delivering'] }
+                },
+                {
+                    status: 'Cancelled'
+                }
+                );
+            if (!orderChange) return false
+            return true
+        } catch (error) {
+            throw new Error('Lỗi hủy đơn');
+        }
+    }
 }

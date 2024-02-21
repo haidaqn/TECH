@@ -1,10 +1,10 @@
-import axiosClient from './axiosClient';
-import { QuerryProduct, CreateComment } from '@/models';
+import { CreateComment, QuerryProduct } from '@/models';
 import queryString from 'query-string';
+import axiosClient from './axiosClient';
 
 const ProductApi = {
     getProduct(query: QuerryProduct) {
-        const { page, limit, title, priceTo, priceEnd, sold, color, category } = query;
+        const { page, limit, title, priceTo, priceEnd, sold, color, category,search } = query;
         const queryParams = {
             page,
             limit,
@@ -14,6 +14,7 @@ const ProductApi = {
             sold,
             color,
             category,
+            search,
         };
         const validQueryParams = queryString.stringify(queryParams, {
             skipNull: true,

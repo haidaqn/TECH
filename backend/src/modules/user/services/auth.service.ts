@@ -45,6 +45,20 @@ export class AuthService {
         }
     };
 
+    sendMailToast = async (email: string) => {
+        try {
+            const html = `Bạn đã đăng ký nhận thông báo từ TECH-STORE qua email này. Khi có thông báo mới chúng tôi sẽ gửi email cho bạn`;
+            const subject = 'Đăng ký nhận thông báo';
+            const data = {
+                to: email,
+                html,
+                subject
+            };
+            await this.sendVerifyEnmail(data);
+            return true;
+        } catch (error) {}
+    };
+
     finalRegister = async (tokenURL: string, req: Request, res: Response) => {
         try {
             const cookie = req.cookies['dataRegister'];

@@ -26,6 +26,7 @@ export class PaginationProductDto {
     priceEnd: number;
     color: string;
     sold: boolean;
+    search: string;
 }
 
 export interface ProductUpdateSold {

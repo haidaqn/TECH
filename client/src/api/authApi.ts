@@ -1,5 +1,5 @@
+import { ChangePasswordUser, LoginForm, RegisterForm, UpdateInfo } from '@/models';
 import axiosClient from './axiosClient';
-import { LoginForm, RegisterForm, UpdateInfo , ChangePasswordUser} from '@/models';
 const authApi = {
     login(data: LoginForm) {
         const url = 'auth/login';
@@ -20,6 +20,10 @@ const authApi = {
     forgorPassword(email: string) {
         const url = 'user/forgotpassword';
         return axiosClient.post(url, { email });
+    },
+    sendmail(email: string) {
+        const url = 'auth/sendmail-toast';
+        return axiosClient.post(url, { data: email });
     },
     hello() {
         const url = 'brand/hello';
