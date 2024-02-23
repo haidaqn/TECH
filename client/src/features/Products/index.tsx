@@ -50,11 +50,23 @@ const Products = () => {
             updatedSearchParmas.set('page', `${query.page}`);
             updatedSearchParmas.set('limit', `${query.limit}`);
             const categoryURL = updatedSearchParmas.get('category');
+            const searchURL = updatedSearchParmas.get('search');
             let shouldUpdateQuery = false;
+            let searchUpdateQuery = false;
             if (searchQuery) {
-                setQuery((prev: QuerryProduct) => ({ ...prev, search: searchQuery }));
+                if (searchQuery !== query.search)
+                    setQuery((prev: QuerryProduct) => ({ ...prev, search: searchQuery }));
                 updatedSearchParmas.set('search', `${query.search}`);
+            } else {
+                if (!searchUpdateQuery) updatedSearchParmas.delete('search');
+                else {
+                    shouldUpdateQuery = true;
+                    if (searchURL)
+                        setQuery((prev: QuerryProduct) => ({ ...prev, search: searchURL }));
+                    updatedSearchParmas.set('search', `${query.search}`);
+                }
             }
+
             if (query.priceTo) updatedSearchParmas.set('priceTo', `${query.priceTo}`);
             else updatedSearchParmas.delete('priceTo');
             if (query.priceEnd) updatedSearchParmas.set('priceEnd', `${query.priceEnd}`);
@@ -81,7 +93,6 @@ const Products = () => {
             History.push({ search: updatedSearchParmas.toString() });
             setLoading(true);
             try {
-                console.log(query);
                 const response: unknown = await ProductApi.getProduct(query);
                 const responseNew = response as BaseModel<Product>;
                 setTotalCount(responseNew.count_page);
@@ -101,7 +112,7 @@ const Products = () => {
         query.color,
         query.category,
         query.search,
-        searchQuery,
+        // searchQuery
     ]);
 
     const breadcrumbs: PathItem[] = [

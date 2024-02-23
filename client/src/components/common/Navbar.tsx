@@ -6,8 +6,6 @@ import {
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { useSearchContext } from '@/router/SearchProvider';
-import { debounce } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
 import { AiFillGitlab, AiFillHome, AiFillSecurityScan } from 'react-icons/ai';
 import { SiThemodelsresource } from 'react-icons/si';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -18,16 +16,12 @@ export const Navbar = () => {
     const { theme } = useTheme();
     const location = useLocation();
     const navigate = useNavigate();
-    const [queryLodash, setQueryLodash] = useState<string>('');
     const { searchQuery, setSearchQuery } = useSearchContext();
-    const debouncedSetQuery = useCallback(
-        debounce((value) => setSearchQuery(value), 1000),
-        []
-    );
 
-     useEffect(() => {
-         if (searchQuery) navigate(`products?page=1&limit=8&search=${searchQuery}`);
-     }, [searchQuery]);
+    const handle = () => {
+        // console.log(searchQuery);
+        if (searchQuery) navigate(`products?page=1&limit=8&search=${searchQuery}`);
+    };
 
     return (
         <>
@@ -97,12 +91,16 @@ export const Navbar = () => {
                     </NavigationMenuList>
                 </NavigationMenu>
                 <Input
-                    value={queryLodash}
+                    value={searchQuery}
                     onChange={(e) => {
-                        setQueryLodash(e.target.value);
-                        debouncedSetQuery(e.target.value);
+                        console.log(e.target.value);
+                        setSearchQuery(e.target.value);
                     }}
-                    // onBlur={() => handleBlur()}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handle();
+                        }
+                    }}
                     type="text"
                     className={'w-[250px] placeholder:text-muted-foreground '}
                     placeholder="Nhập nội dung để tìm kiếm"

@@ -13,13 +13,22 @@ export const Footer = () => {
     const [email, setEmail] = useState<string>('');
 
     const handleBlur = async () => {
-        const res = await authApi.sendmail(email);
-        if (res) {
-            setEmail('')
-            toast({
-                title: 'Đăng ký nhận thông báo thành công !',
-            });
-        } else {
+        try {
+            if (email) {
+                const res = await authApi.sendmail(email);
+                if (res) {
+                    setEmail('');
+                    toast({
+                        title: 'Đăng ký nhận thông báo thành công !',
+                    });
+                } else {
+                    toast({
+                        title: 'Đăng ký nhận thông báo thất bại !',
+                        variant: 'destructive',
+                    });
+                }
+            }
+        } catch (error) {
             toast({
                 title: 'Đăng ký nhận thông báo thất bại !',
                 variant: 'destructive',
@@ -40,7 +49,11 @@ export const Footer = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             type="text"
-                            onBlur={() => handleBlur()}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleBlur();
+                                }
+                            }}
                             className="w-[450px] py-6 rounded-xl placeholder:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white text-white"
                             placeholder="example@gmail.com"
                         />

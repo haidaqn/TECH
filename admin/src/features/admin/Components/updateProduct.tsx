@@ -87,19 +87,19 @@ const UpdateProduct = () => {
                         quantity: productData.quantity
                     })
                     .then(() => {
-                        setIsLoading(false)
+                        setIsLoading(false);
                         enqueueSnackbar('Sửa sản phẩm thành công !', {
                             variant: 'success'
                         });
                     })
                     .catch(() => {
-                        setIsLoading(false)
+                        setIsLoading(false);
                         enqueueSnackbar('Sửa không thành công !', {
                             variant: 'error'
                         });
                     });
             } catch (error) {
-                setIsLoading(false)
+                setIsLoading(false);
                 enqueueSnackbar('Sửa không thành công !', {
                     variant: 'error'
                 });
@@ -253,7 +253,7 @@ const UpdateProduct = () => {
                                                         </label>
                                                     </Grid>
                                                     <Grid item xs={8}>
-                                                        <AutoField value={categoryNew} setValue={setCategoryNew} />
+                                                        <AutoField value={categoryNew || { id: 1, title: productData.category }} setValue={setCategoryNew} />
                                                     </Grid>
                                                 </Grid>
                                             </Grid>

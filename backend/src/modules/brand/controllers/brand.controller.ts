@@ -11,9 +11,9 @@ export class BrandController {
         return await this.brandService.GetAllBrand(page, limit);
     }
 
-    @Get(':id')
-    async GetBrandById(@Param('id') id: string) {
-        return await this.brandService.GetBrandById(id);
+    @Get('hello')
+    async getHello() {
+        return 'Hello Tech Store';
     }
 
     @Post('createBrand')
@@ -31,8 +31,8 @@ export class BrandController {
         return await this.brandService.UpdateBrand(id, title);
     }
 
-    @Get('hello')
-    async getHello() {
-        return 'Hello Tech Store';
+    @Get(':id')
+    async GetBrandById(@Param('id') id: string) {
+        return await this.brandService.GetBrandById(id);
     }
 }
