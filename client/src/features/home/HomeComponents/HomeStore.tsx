@@ -1,14 +1,20 @@
 import { useTheme } from '@/components/theme-provider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'swiper/css';
 import { DayDetail, FeaturedProducts, ProductNew, ProductSold } from './Components';
 import { SlidebarHome } from './Components/Slidebar';
+import { useSearchContext } from '@/context';
 export const HomeStore = () => {
     const [productNew, setProductNew] = useState<boolean>(false);
+    const { setSearchQuery } = useSearchContext();
     const { theme } = useTheme();
     const handleNewOrSold = (value: boolean): void => {
         setProductNew((prev) => (prev !== value ? value : prev));
     };
+
+    useEffect(() => {
+        setSearchQuery('');
+    }, []);
 
     return (
         <div className="flex flex-col gap-6">

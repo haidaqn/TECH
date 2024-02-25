@@ -1,3 +1,4 @@
+import authApi from '@/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { authActions } from '@/features/auth/AuthSlice';
 import { Cart } from '@/features/cart/page';
@@ -8,10 +9,10 @@ import { FaPhone } from 'react-icons/fa6';
 import { IoBagSharp } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../theme-provider';
-import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '../ui/button';
 import { Command } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 export const Header = () => {
     const { theme } = useTheme();
@@ -19,8 +20,14 @@ export const Header = () => {
     const [open, setOpen] = useState<boolean>(false);
     const { actionAuth } = useAppSelector((state) => state.auth);
     const user = useInforUser();
-    const handleLogout = () => {
-        dispatch(authActions.logout());
+    const handleLogout = async () => {
+        try {
+            await authApi.logout().then(() => {
+                dispatch(authActions.logout());
+            });
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const navigate = useNavigate();
@@ -71,7 +78,7 @@ export const Header = () => {
                                                 className="capitalize"
                                                 onClick={() => {
                                                     handleLogout();
-                                                    navigate('/store')
+                                                    navigate('/store');
                                                 }}
                                             >
                                                 Đăng Xuất

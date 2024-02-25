@@ -5,18 +5,19 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useToast } from '@/components/ui/use-toast';
 import { cartActions as actions } from '@/features/cart/CartSlice';
+import { useInforUser, useToken } from '@/hooks';
 import { handlePrice } from '@/utils';
 import { useMemo } from 'react';
-import { ItemCart } from './ItemCart';
-import { useInforUser } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
+import { ItemCart } from './ItemCart';
 
 export const Cart = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
     const { lengthProduct, dataStore } = useAppSelector((state) => state.cart);
     const dispatch = useAppDispatch();
     const { toast } = useToast();
-    const user = useInforUser()
-    const navigate = useNavigate()
+    const user = useInforUser();
+    const token = useToken();
+    const navigate = useNavigate();
     const totalPirce = useMemo(
         () => dataStore.reduce((sum, item) => item.price * item.quantity + sum, 0),
         [lengthProduct]
@@ -24,15 +25,22 @@ export const Cart = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean
 
     const handleCreateOrder = async () => {
         try {
-            console.log(user?.address)
-            if (user?.address === undefined) {
+            if (!token) {
+                navigate('/auth/login');
+                toast({
+                    title: 'Tạo đơn hàng thất bại!',
+                    description: 'Bạn chưa đăng nhập',
+                    variant: 'destructive',
+                });
+                setOpen(false);
+            } else if (user?.address === undefined) {
                 navigate('/user/account/profile');
                 toast({
                     title: 'Tạo đơn hàng thất bại!',
                     description: 'Bạn chưa có địa chỉ giao hàng',
                     variant: 'destructive',
                 });
-                setOpen(false)
+                setOpen(false);
             } else {
                 await orderApi
                     .createOrder()

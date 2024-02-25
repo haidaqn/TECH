@@ -15,9 +15,10 @@ import {
 } from '@/components/ui/pagination';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useSearchContext } from '@/context';
+import { useDebounce } from '@/hooks';
 import { BaseModel, Product, QuerryProduct } from '@/models';
 import History from '@/router/History';
-import { useSearchContext } from '@/router/SearchProvider';
 import { Color, generateRange } from '@/utils';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
@@ -26,15 +27,14 @@ import { useLocation } from 'react-router-dom';
 const Products = () => {
     const location = useLocation();
     const { data } = useAppSelector((state) => state.categories);
-    const { searchQuery } = useSearchContext();
     const [productData, setProductData] = useState<Product[]>([]);
     const [openSelectPrice, setOpenSelectPrice] = useState<boolean>(false);
     const [openSelectColor, setOpenSelectColor] = useState<boolean>(false);
     const [openSelectCategory, setOpenSelectCategory] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
-
+    const { searchQuery } = useSearchContext();
     const urlRouter = new URLSearchParams(location.search);
-
+    const searchDebounce = useDebounce(searchQuery, 1000);
     const [isLoading, setLoading] = useState<boolean>(false);
 
     const [query, setQuery] = useState<QuerryProduct>({
@@ -45,28 +45,16 @@ const Products = () => {
     });
 
     useEffect(() => {
+        setQuery((prev) => ({ ...prev, search: searchQuery }));
+    }, [searchDebounce]);
+
+    useEffect(() => {
         const fetchData = async () => {
             const updatedSearchParmas = new URLSearchParams(location.search);
             updatedSearchParmas.set('page', `${query.page}`);
             updatedSearchParmas.set('limit', `${query.limit}`);
             const categoryURL = updatedSearchParmas.get('category');
-            const searchURL = updatedSearchParmas.get('search');
             let shouldUpdateQuery = false;
-            let searchUpdateQuery = false;
-            if (searchQuery) {
-                if (searchQuery !== query.search)
-                    setQuery((prev: QuerryProduct) => ({ ...prev, search: searchQuery }));
-                updatedSearchParmas.set('search', `${query.search}`);
-            } else {
-                if (!searchUpdateQuery) updatedSearchParmas.delete('search');
-                else {
-                    shouldUpdateQuery = true;
-                    if (searchURL)
-                        setQuery((prev: QuerryProduct) => ({ ...prev, search: searchURL }));
-                    updatedSearchParmas.set('search', `${query.search}`);
-                }
-            }
-
             if (query.priceTo) updatedSearchParmas.set('priceTo', `${query.priceTo}`);
             else updatedSearchParmas.delete('priceTo');
             if (query.priceEnd) updatedSearchParmas.set('priceEnd', `${query.priceEnd}`);
@@ -77,6 +65,11 @@ const Products = () => {
                 }
                 updatedSearchParmas.set('color', `${query.color}`);
             } else updatedSearchParmas.delete('color');
+
+            if (query.search) {
+                updatedSearchParmas.set('search', `${query.search}`);
+            } else updatedSearchParmas.delete('search');
+
             if (query.category) {
                 if (query.category !== categoryURL)
                     setQuery((prev: QuerryProduct) => ({ ...prev, page: 1 }));
@@ -93,6 +86,7 @@ const Products = () => {
             History.push({ search: updatedSearchParmas.toString() });
             setLoading(true);
             try {
+                // console.log(query)
                 const response: unknown = await ProductApi.getProduct(query);
                 const responseNew = response as BaseModel<Product>;
                 setTotalCount(responseNew.count_page);
@@ -112,7 +106,7 @@ const Products = () => {
         query.color,
         query.category,
         query.search,
-        // searchQuery
+        // searchQuery,
     ]);
 
     const breadcrumbs: PathItem[] = [

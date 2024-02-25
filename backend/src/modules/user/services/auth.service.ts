@@ -69,8 +69,7 @@ export class AuthService {
                 return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
             } else {
                 try {
-                    const user = await this.userService.createUser(data);
-                    const tokenNew = await this.jwtService.signAsync({ email: data.email });
+                    await this.userService.createUser(data);
                     res.clearCookie('dataRegister');
                     return res.redirect('https://tech-three-beta.vercel.app/finalregister/success');
                 } catch (error) {
@@ -86,7 +85,15 @@ export class AuthService {
     login = async (loginUserDto: LoginUserDto) => {
         const user = await this.userService.findByLogin(loginUserDto);
         const token = await this.jwtService.signAsync({ email: user.email, role: user.role, id: user._id });
-        return BaseResponse<AuthResponse>({ data: user, token }, 'ok', HttpStatus.OK, true);
+        const refreshToken = await this.jwtService.sign(
+            { email: user.email, role: user.role, id: user._id },
+            {
+                secret: process.env.SECRETKEY_REFRESH,
+                expiresIn: process.env.EXPIRESIN_REFRESH
+            }
+        );
+        await this.userService.update({ email: user.email }, { refreshToken: refreshToken });
+        return BaseResponse<AuthResponse>({ data: user, token, refreshToken }, 'ok', HttpStatus.OK, true);
     };
 
     checkEmailUser = async (email: string) => {
@@ -97,7 +104,6 @@ export class AuthService {
             return BaseResponse<any>(undefined, 'This email does not exist', HttpStatus.BAD_REQUEST, false);
         }
     };
-
     validateUser = async (email: string) => {
         const user = await this.userService.findByEmail(email);
         if (!user) {
@@ -110,11 +116,11 @@ export class AuthService {
         return makentoken();
     }
 
-    private async _createToken({ email }, refresh = true) {
-        const accessToken = this.jwtService.sign({ email });
+    private async _createToken({ email, _id, role }, refresh = true) {
+        const accessToken = this.jwtService.sign({ email, id: _id, role });
         if (refresh) {
             const refreshToken = this.jwtService.sign(
-                { email },
+                { email, id: _id, role },
                 {
                     secret: process.env.SECRETKEY_REFRESH,
                     expiresIn: process.env.EXPIRESIN_REFRESH
@@ -122,10 +128,8 @@ export class AuthService {
             );
             await this.userService.update({ email: email }, { refreshToken: refreshToken });
             return {
-                expiresIn: process.env.EXPIRESIN,
-                accessToken,
-                refreshToken,
-                expiresInRefresh: process.env.EXPIRESIN_REFRESH
+                token: accessToken,
+                refreshToken
             };
         } else {
             return {
@@ -144,15 +148,10 @@ export class AuthService {
             const payload = await this.jwtService.verify(refresh_token, {
                 secret: process.env.SECRETKEY_REFRESH
             });
-
+            console.log(payload)
             const user = await this.userService.getUserByRefresh(refresh_token, payload.email);
-
-            const token = await this._createToken(user, false);
-
-            return {
-                email: user.email,
-                ...token
-            };
+            const token = await this._createToken(user);
+            return token;
         } catch (e) {
             throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
         }
@@ -162,7 +161,7 @@ export class AuthService {
         return token;
     }
 
-    async logout(user: User) {
-        await this.userService.update({ email: user.email }, { refreshToken: null });
+    async logout(id: string) {
+        await this.userService.update({ _id: id }, { refreshToken: null });
     }
 }

@@ -1,3 +1,4 @@
+import { SearchProvider } from '@/context';
 import Blog from '@/features/Blog';
 import Faq from '@/features/FAQ';
 import Products from '@/features/Products';
@@ -5,7 +6,6 @@ import { DetailProduct } from '@/features/Products/Components';
 import Home from '@/features/home';
 import { HomeStore } from '@/features/home/HomeComponents';
 import Service from '@/features/home/Service';
-import { SearchProvider } from '@/router/SearchProvider';
 import { Route, Routes } from 'react-router-dom';
 
 export const HomeRouter = () => {

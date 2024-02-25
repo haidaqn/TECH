@@ -5,6 +5,10 @@ const authApi = {
         const url = 'auth/login';
         return axiosClient.post(url, data);
     },
+    logout() {
+        const url = 'auth/logout';
+        return axiosClient.post(url)
+    },
     register(data: RegisterForm) {
         const url = 'auth/register';
         return axiosClient.post(url, data);

@@ -9,6 +9,7 @@ import { User } from '@/models';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { useRef, useState } from 'react';
 import { authActions } from '@/features/auth/AuthSlice';
+import { ReloadIcon } from '@radix-ui/react-icons';
 export interface UserUpdate {
     name?: string;
     mobile?: string;
@@ -22,6 +23,7 @@ export const ProfileUser = () => {
     const token = localStorage.getItem('access_token');
     const imgRef = useRef<HTMLInputElement | null>(null);
     const { toast } = useToast();
+    const [loading, setLoading] = useState<boolean>(false);
     const [userUpdate, setUserUpdate] = useState<UserUpdate>({
         name: user?.name,
         mobile: user?.mobile,
@@ -49,6 +51,7 @@ export const ProfileUser = () => {
 
     const handleUpdateUser = async () => {
         try {
+            setLoading(true);
             if (
                 !userUpdate.name ||
                 userUpdate.name.length < 5 ||
@@ -75,7 +78,9 @@ export const ProfileUser = () => {
                     description: 'Bạn đã cập nhật thông tin thành công',
                 });
             }
+            setLoading(false);
         } catch (error: any) {
+            setLoading(false);
             toast({
                 title: 'Cập nhật thông tin thất bại',
                 description: error.message,
@@ -87,7 +92,7 @@ export const ProfileUser = () => {
     return (
         <div className=" flex flex-col gap-3 w-full">
             <div className="flex flex-col gap-0 border-b-2 w-full pb-2">
-                <span className="text-lg font-semibold">Hồ sơ của tôi</span>
+                <span className="text-xl font-bold">Hồ sơ của tôi</span>
                 <span className="text-sm text-gray-600">
                     Quản lý thông tin hồ sơ để bảo mật tài khoản
                 </span>
@@ -139,13 +144,14 @@ export const ProfileUser = () => {
                         <span className="flex-1"></span>
                         <span className="flex-3">
                             <Button className="w-fit" onClick={() => handleUpdateUser()}>
+                                {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
                                 Lưu
                             </Button>
                         </span>
                     </div>
                 </div>
                 <div className="flex-2 border-l-2 pl-3 flex flex-col gap-4 items-center justify-center w-full">
-                    <Avatar className="cursor-pointer flex items-center justify-center">
+                    <Avatar className="cursor-pointer w-[150px] rounded-full flex items-center justify-center">
                         <AvatarImage
                             src={
                                 userUpdate?.avatar

@@ -39,12 +39,12 @@ export class AuthController {
         return await this.authService.checkEmailUser(email);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('logout')
     async logout(@Req() req: any) {
-        await this.logout(req.user);
-        return {
-            statusCode: 200
-        };
+        const userID = (req.user._id as ObjectId).toString();
+        await this.authService.logout(userID);
+        return true
     }
 
     @UseGuards(AuthGuard('jwt'))

@@ -51,8 +51,7 @@ const cartSlice = createSlice({
                 existingProduct.quantity -= 1;
                 state.lengthProduct -= 1;
             }
-            console.log(action.payload);
-            updateCartAsync(action.payload);
+            updateCartAsync(action.payload)
         },
         removeCart: (state, action: PayloadAction<CartItemData>) => {
             const { color, id, quantity } = action.payload;

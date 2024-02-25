@@ -19,13 +19,15 @@ import { useToast } from '@/components/ui/use-toast';
 import { ListResponse, PagingOrder, ProductOrder } from '@/models';
 import History from '@/router/History';
 import { generateRange } from '@/utils';
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 export const Purcharse = () => {
     const location = useLocation();
     const { toast } = useToast();
-    const [isCheck,setIsCheck] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isCheck, setIsCheck] = useState<boolean>(false);
     const [query, setQuery] = useState<PagingOrder>({
         page: 1,
         limit: 5,
@@ -34,20 +36,21 @@ export const Purcharse = () => {
     const [dataOrder, setDataOrder] = useState<ProductOrder[]>();
     const [totalCount, setTotalCount] = useState<number>(0);
 
-
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const updatedSearchParmas = new URLSearchParams(location.search);
             updatedSearchParmas.set('page', `${query.page}`);
             updatedSearchParmas.set('limit', `${query.limit}`);
             updatedSearchParmas.set('status', `${query.status}`);
             History.push({ search: updatedSearchParmas.toString() });
             try {
-                console.log(query)
                 const res = (await orderApi.getOrderStatus(query)) as unknown as ListResponse;
                 setDataOrder(res.data);
+                setLoading(false);
                 setTotalCount(res.count_page);
             } catch (error: any) {
+                setLoading(false);
                 toast({
                     title: 'Lấy dữ liệu thất bại',
                     description: error.message,
@@ -56,7 +59,7 @@ export const Purcharse = () => {
             }
         };
         fetchData();
-    }, [query.status, query.page,isCheck]);
+    }, [query.status, query.page, isCheck]);
     return (
         <div className="flex flex-col gap-5">
             <NavigationMenu>
@@ -108,70 +111,83 @@ export const Purcharse = () => {
                 </NavigationMenuList>
             </NavigationMenu>
             <div className="">
-                {dataOrder?.length ? (
-                    <div className="flex flex-col gap-5">
-                        <div className="flex flex-col gap-4">
-                            {dataOrder.map((order) => (
-                                <PurchaseItem
-                                    isCheck={isCheck}
-                                    setIsCheck={setIsCheck}
-                                    products={order.products}
-                                    total={order.total}
-                                    key={order._id}
-                                    status={order.status}
-                                    orderID={order._id}
-                                />
-                            ))}
+                {loading ? (
+                    <>
+                        <div className=" relative flex items-center justify-center h-[40vh]">
+                            <ReloadIcon scale={150} className="mr-2 h-4 w-4 animate-spin" />
                         </div>
-                        <Pagination>
-                            <PaginationContent>
-                                {totalCount >= 3 && (
-                                    <PaginationItem className="cursor-pointer">
-                                        <PaginationPrevious
-                                            href="#"
-                                            onClick={() =>
-                                                setQuery((prev: PagingOrder) => ({
-                                                    ...prev,
-                                                    page: 1,
-                                                }))
-                                            }
-                                        />
-                                    </PaginationItem>
-                                )}
-                                {generateRange(1, totalCount).map((page, index) => (
-                                    <PaginationItem className="cursor-pointer" key={page + index}>
-                                        <PaginationLink
-                                            isActive={page === query.page}
-                                            onClick={() => {
-                                                setQuery((prev: PagingOrder) => ({
-                                                    ...prev,
-                                                    page: page,
-                                                }));
-                                            }}
-                                        >
-                                            {page}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
-                                {totalCount >= 3 && (
-                                    <PaginationItem className="cursor-pointer">
-                                        <PaginationNext
-                                            href="#"
-                                            onClick={() =>
-                                                setQuery((prev: PagingOrder) => ({
-                                                    ...prev,
-                                                    page: totalCount,
-                                                }))
-                                            }
-                                        />
-                                    </PaginationItem>
-                                )}
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
+                    </>
                 ) : (
                     <>
-                        <span>không có đơn hàng nào</span>
+                        {dataOrder?.length ? (
+                            <div className="flex flex-col gap-5 ">
+                                <div className="flex flex-col gap-4">
+                                    {dataOrder.map((order) => (
+                                        <PurchaseItem
+                                            isCheck={isCheck}
+                                            setIsCheck={setIsCheck}
+                                            products={order.products}
+                                            total={order.total}
+                                            key={order._id}
+                                            status={order.status}
+                                            orderID={order._id}
+                                        />
+                                    ))}
+                                </div>
+                                <Pagination>
+                                    <PaginationContent>
+                                        {totalCount >= 3 && (
+                                            <PaginationItem className="cursor-pointer">
+                                                <PaginationPrevious
+                                                    href="#"
+                                                    onClick={() =>
+                                                        setQuery((prev: PagingOrder) => ({
+                                                            ...prev,
+                                                            page: 1,
+                                                        }))
+                                                    }
+                                                />
+                                            </PaginationItem>
+                                        )}
+                                        {generateRange(1, totalCount).map((page, index) => (
+                                            <PaginationItem
+                                                className="cursor-pointer"
+                                                key={page + index}
+                                            >
+                                                <PaginationLink
+                                                    isActive={page === query.page}
+                                                    onClick={() => {
+                                                        setQuery((prev: PagingOrder) => ({
+                                                            ...prev,
+                                                            page: page,
+                                                        }));
+                                                    }}
+                                                >
+                                                    {page}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        ))}
+                                        {totalCount >= 3 && (
+                                            <PaginationItem className="cursor-pointer">
+                                                <PaginationNext
+                                                    href="#"
+                                                    onClick={() =>
+                                                        setQuery((prev: PagingOrder) => ({
+                                                            ...prev,
+                                                            page: totalCount,
+                                                        }))
+                                                    }
+                                                />
+                                            </PaginationItem>
+                                        )}
+                                    </PaginationContent>
+                                </Pagination>
+                            </div>
+                        ) : (
+                            <div className='min-h-[250px]'>
+                                <span>không có đơn hàng nào</span>
+                            </div>
+                        )}
                     </>
                 )}
             </div>

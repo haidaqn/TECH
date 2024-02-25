@@ -5,10 +5,15 @@ import { EmailService } from 'src/modules/email/email.service';
 import { ChangePasswordUser, CreateUserDto, DataOrder, LoginUserDto, UpdateInfoUser } from '../dto/user.dto';
 import { User } from '../models/user.model';
 import { UserRepository } from '../repositories/user.repository';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository, private readonly emailService: EmailService) {}
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly emailService: EmailService,
+        private readonly jwtService: JwtService
+    ) {}
 
     async createUser(userDto: CreateUserDto) {
         userDto.password = await bcrypt.hash(userDto.password, 10);
@@ -54,13 +59,13 @@ export class UserService {
         if (!user) {
             throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
         }
-
+        // const is_equal = await bcrypt.compareSync(refresh_token, user.refreshToken);
         const is_equal = await bcrypt.compare(this.reverse(refresh_token), user.refreshToken);
 
+        console.log(is_equal);
         if (!is_equal) {
             throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
-
         return user;
     };
 

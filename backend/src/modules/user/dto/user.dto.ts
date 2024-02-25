@@ -45,6 +45,7 @@ export class EmailSendDto {
 export interface AuthResponse {
     data: User;
     token: string;
+    refreshToken: string;
 }
 
 export interface AuthResponseRegister {
