@@ -55,6 +55,7 @@ export const RegisterPage = () => {
             await authApi
                 .register(data)
                 .then(() => {
+                    formRegister.reset();
                     toast({
                         title: `Vui lòng kiểm tra email ${data.email}`,
                     });
