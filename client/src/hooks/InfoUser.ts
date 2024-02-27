@@ -4,5 +4,5 @@ import { User } from '@/models';
 
 export function useInforUser(): User | null {
     const user = useAppSelector((state) => state.auth.currentUser?.data);
-    return user || JSON.parse(localStorage.getItem(StorageKeys.USER) || 'null') || null;
+    return JSON.parse(localStorage.getItem(StorageKeys.USER) || 'null') || user || null;
 }

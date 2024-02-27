@@ -27,9 +27,12 @@ export class UserService {
     }
 
     findByLogin = async ({ email, password }: LoginUserDto) => {
-        const user = (await this.userRepository.findByCondition({
-            email: email
-        })) as User;
+        const user = (await this.userRepository.findByCondition(
+            {
+                email: email
+            },
+            { refreshToken: 0 }
+        )) as User;
         if (!user) {
             throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
         }
@@ -61,7 +64,6 @@ export class UserService {
         }
         // const is_equal = await bcrypt.compareSync(refresh_token, user.refreshToken);
         const is_equal = await bcrypt.compare(this.reverse(refresh_token), user.refreshToken);
-
         console.log(is_equal);
         if (!is_equal) {
             throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);

@@ -22,7 +22,7 @@ function* handleLogin(action: PayloadAction<LoginForm>) {
         localStorage.setItem(StorageKeys.TOKEN, user.token);
         localStorage.setItem(StorageKeys.NAMEUSER, user.data.name);
         localStorage.setItem(StorageKeys.USER, JSON.stringify(user.data));
-        localStorage.setItem(StorageKeys.REFRESH_TOKEN, JSON.stringify(user.data.refreshToken));
+        localStorage.setItem(StorageKeys.REFRESH_TOKEN, JSON.stringify(user.refreshToken));
         History.push('/store');
     } catch (error) {
         // Handle the error here

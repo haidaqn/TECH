@@ -30,8 +30,9 @@ export class AuthController {
     }
 
     @Post('refresh')
-    async refresh(@Body() body) {
-        return await this.authService.refresh(body.refresh_token);
+    async refresh(@Body() body: { refresh_token: string }) {
+        const { refresh_token } = body;
+        return await this.authService.refresh(refresh_token);
     }
 
     @Get('findEmailUser')

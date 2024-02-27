@@ -8,7 +8,7 @@ export interface AuthState {
     currentUser?: {
         data: User;
         token: string;
-        refreshToken :string
+        refreshToken ?:string
     };
 }
 
