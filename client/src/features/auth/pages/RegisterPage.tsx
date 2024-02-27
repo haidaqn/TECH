@@ -44,6 +44,7 @@ export const RegisterPage = () => {
     const formRegister = useForm<RegisterForm>({
         resolver: yupResolver(schemaRegister),
         defaultValues: {
+            name:'',
             email: '',
             password: '',
             passwordConfirm: '',
