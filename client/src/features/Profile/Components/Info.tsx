@@ -64,8 +64,9 @@ export const ProfileUser = () => {
                     variant: 'destructive',
                 });
             } else {
-                const res = (await authApi.updateInfoUser(userUpdate)) as unknown as User;
+                const res =( (await authApi.updateInfoUser(userUpdate)) as unknown as User)
                 if (token) {
+                    console.log(res)
                     dispath(
                         authActions.loginSuccess({
                             data: res,

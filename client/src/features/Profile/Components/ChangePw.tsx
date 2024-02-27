@@ -37,6 +37,11 @@ export const ChangePassword = () => {
 
     const form = useForm<ChangePasswordUser>({
         resolver: yupResolver(schema),
+        defaultValues: {
+            oldPassword: '',
+            newPassword: '',
+            enterNewPassword: '',
+        },
     });
 
     const handleChangePassword: SubmitHandler<ChangePasswordUser> = async (
@@ -46,6 +51,7 @@ export const ChangePassword = () => {
             setLoading(true);
             const res = (await authApi.changePassword(data)) as unknown as Boolean;
             if (res) {
+                form.reset();
                 toast({
                     title: 'Đổi mật khẩu thành công !',
                 });
