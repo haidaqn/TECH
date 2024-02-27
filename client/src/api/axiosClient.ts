@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { STATIC_HOST } from '../constants/common';
-import { authActions } from '@/features/auth/AuthSlice';
 
 const axiosClient = axios.create({
     baseURL: `${STATIC_HOST}`,
