@@ -84,6 +84,14 @@ const NewProduct = () => {
                     quantity: productData.quantity
                 })
                 .then(() => {
+                    setProductData({
+                        title: '',
+                        price: '',
+                        description: '',
+                        category: '',
+                        quantity: 0
+                    });
+                    setImages('')
                     enqueueSnackbar('Tạo sản phẩm thành công !', {
                         variant: 'success'
                     });
