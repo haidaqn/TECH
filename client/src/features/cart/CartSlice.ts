@@ -40,7 +40,7 @@ const cartSlice = createSlice({
                 state.dataStore.push(action.payload);
                 state.lengthProduct += quantity;
             }
-            updateCartAsync(action.payload);
+            if (localStorage.getItem('access_token')) updateCartAsync(action.payload);
         },
         deleteCart: (state, action: PayloadAction<CartItemData>) => {
             const { color, id } = action.payload;
@@ -51,7 +51,7 @@ const cartSlice = createSlice({
                 existingProduct.quantity -= 1;
                 state.lengthProduct -= 1;
             }
-            updateCartAsync(action.payload)
+            if (localStorage.getItem('access_token')) updateCartAsync(action.payload);
         },
         removeCart: (state, action: PayloadAction<CartItemData>) => {
             const { color, id, quantity } = action.payload;
@@ -61,7 +61,7 @@ const cartSlice = createSlice({
                 (item) => !(item.color === color && item.id === id)
             );
             state.lengthProduct -= quantity;
-            updateCartAsync(newData);
+            if (localStorage.getItem('access_token')) updateCartAsync(newData);
         },
     },
 });
