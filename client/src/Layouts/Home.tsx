@@ -15,12 +15,11 @@ export const HomeRouter = () => {
                 <Routes>
                     <Route path="/" element={<Home />}>
                         <Route path="products/:pid" element={<DetailProduct />} />
-                        {/* <Route path="category/:category" element={<Category />} /> */}
-                        <Route path="/" element={<HomeStore />} />
                         <Route path="products" element={<Products />} />
                         <Route path="blog" element={<Blog />} />
                         <Route path="service" element={<Service />} />
                         <Route path="faq" element={<Faq />} />
+                        <Route path="/" element={<HomeStore />} />
                     </Route>
                 </Routes>
             </div>

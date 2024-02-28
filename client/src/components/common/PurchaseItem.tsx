@@ -27,7 +27,7 @@ export const PurchaseItem = ({
 }) => {
     const navigate = useNavigate();
     const { toast } = useToast();
-    const [open, setOpen] = useState<boolean>(false);
+    // const [open, setOpen] = useState<boolean>(false);
     const [openCancell, setOpenCancell] = useState<boolean>(false);
     const [comment, setComment] = useState<CreateComment>({
         star: 0,
@@ -35,11 +35,30 @@ export const PurchaseItem = ({
         idProduct: '',
     });
 
+    const [openDialogs, setOpenDialogs] = useState<{ [productId: string]: boolean }>({});
+
+    const openDialog = (productId: string) => {
+        setOpenDialogs((prevState) => ({
+            ...prevState,
+            [productId]: true,
+        }));
+    };
+
+    const closeDialog = (productId: string) => {
+        setOpenDialogs((prevState) => ({
+            ...prevState,
+            [productId]: false,
+        }));
+    };
+
     const handleCreateRating = async () => {
         try {
             await ProductApi.createComment(comment)
                 .then(() => {
-                    setOpen(false);
+                    setOpenDialogs((prevState) => ({
+                        ...prevState,
+                        [comment.idProduct]: false,
+                    }));
                     setComment({ star: 0, comment: '', idProduct: '' });
                     toast({
                         title: 'Đánh giá thành công!',
@@ -47,7 +66,10 @@ export const PurchaseItem = ({
                     });
                 })
                 .catch((err: any) => {
-                    setOpen(false);
+                    setOpenDialogs((prevState) => ({
+                        ...prevState,
+                        [comment.idProduct]: false,
+                    }));
                     toast({
                         title: 'Đánh giá không thành công!',
                         description: err.message,
@@ -55,6 +77,10 @@ export const PurchaseItem = ({
                     });
                 });
         } catch (error: any) {
+            setOpenDialogs((prevState) => ({
+                ...prevState,
+                [comment.idProduct]: false,
+            }));
             toast({
                 title: 'Đánh giá không thành công!',
                 description: error.message,
@@ -83,7 +109,15 @@ export const PurchaseItem = ({
         <Dialog open={openCancell} onOpenChange={setOpenCancell}>
             <Card className="p-4">
                 {products.map((product, index) => (
-                    <Dialog key={product.product._id + index} open={open} onOpenChange={setOpen}>
+                    <Dialog
+                        open={openDialogs[product.product._id]}
+                        onOpenChange={(isOpen) =>
+                            isOpen
+                                ? openDialog(product.product._id)
+                                : closeDialog(product.product._id)
+                        }
+                        key={product.product._id + index}
+                    >
                         <div className="border-b py-2 flex gap-5">
                             <img
                                 src={product.product.thumb}
@@ -108,7 +142,7 @@ export const PurchaseItem = ({
                                                     ...prev,
                                                     idProduct: product.product._id,
                                                 }));
-                                                setOpen(true);
+                                                openDialog(product.product._id);
                                             }}
                                             className="bg-gray-500 w-fit px-4 py-1 rounded-lg text-white capitalize hover:opacity-70"
                                         >
@@ -132,7 +166,10 @@ export const PurchaseItem = ({
                                         {generateRange(1, 5).map((item) => (
                                             <FaRegStar
                                                 onClick={() =>
-                                                    setComment((prev) => ({ ...prev, star: item }))
+                                                    setComment((prev) => ({
+                                                        ...prev,
+                                                        star: item,
+                                                    }))
                                                 }
                                                 key={item}
                                                 size={18}

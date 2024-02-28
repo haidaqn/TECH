@@ -46,7 +46,7 @@ axiosClient.interceptors.response.use(
                         window.localStorage.removeItem('name_user');
                         window.localStorage.removeItem('user');
                         window.localStorage.removeItem('refresh_token');
-                        window.location.href = '/auth/login';
+                        // window.location.href = '/auth/login';
                         return Promise.reject(refreshError);
                     });
             } else {
@@ -54,7 +54,7 @@ axiosClient.interceptors.response.use(
                 window.localStorage.removeItem('name_user');
                 window.localStorage.removeItem('user');
                 window.localStorage.removeItem('refresh_token');
-                window.location.href = '/auth/login';
+                // window.location.href = '/auth/login';
                 return Promise.reject(error);
             }
         }

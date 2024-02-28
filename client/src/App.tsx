@@ -37,13 +37,13 @@ function App() {
         <ThemeProvider defaultTheme="light" storageKey="theme">
             <div className="relative w-screen h-screen">
                 <Routes>
-                    <Route path="/" element={<Welcome />} />
                     <Route element={<ProtectAuth />}>
                         <Route path="/auth/*" element={<AuthRouter />} />
                     </Route>
                     <Route path="/user/*" element={<ProfileUserRouter />} />
                     <Route path="/store/*" element={<HomeRouter />} />
                     <Route path="/finalregister/:status" element={<FinalRegister />} />
+                    <Route path="/" element={<Welcome />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </div>
