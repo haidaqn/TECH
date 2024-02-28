@@ -11,6 +11,26 @@ export class OrderService {
         private readonly userService: UserService,
         private readonly productService: ProductService
     ) {}
+
+    async getDetail(orderID: string) {
+        try {
+            const order = await this.orderRepository.getByCondition({ _id: orderID }, null, null, [
+                {
+                    path: 'products.product',
+                    select: 'title price thumb'
+                },
+                {
+                    path: 'orderBy',
+                    select: 'name address mobile email'
+                }
+            ]);
+
+            return order[0];
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
     async getAllOrderByAdmin(page: number, limit: number, status: string) {
         const count = await this.orderRepository.countDocuments({});
         const count_page = (count / limit).toFixed();
@@ -139,9 +159,9 @@ export class OrderService {
                 {
                     status: 'Cancelled'
                 }
-                );
-            if (!orderChange) return false
-            return true
+            );
+            if (!orderChange) return false;
+            return true;
         } catch (error) {
             throw new Error('Lỗi hủy đơn');
         }

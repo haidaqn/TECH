@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Command } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { cartActions } from '@/features/cart/CartSlice';
 
 export const Header = () => {
     const { theme } = useTheme();
@@ -26,7 +27,9 @@ export const Header = () => {
                 dispatch(authActions.logout());
             });
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        } finally {
+            dispatch(cartActions.resetCart());
         }
     };
 

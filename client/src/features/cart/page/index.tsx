@@ -33,7 +33,7 @@ export const Cart = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean
                     variant: 'destructive',
                 });
                 setOpen(false);
-            } else if (user?.address === undefined) {
+            } else if (user?.address === undefined || user?.address === 'Chưa có địa chỉ') {
                 navigate('/user/account/profile');
                 toast({
                     title: 'Tạo đơn hàng thất bại!',

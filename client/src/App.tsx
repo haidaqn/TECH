@@ -61,4 +61,3 @@ function App() {
 }
 
 export default App;
-// https://digital-world-2.myshopify.com/

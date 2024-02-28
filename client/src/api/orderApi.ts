@@ -20,6 +20,11 @@ const orderApi = {
     changeOrder(orderID: string) {
         const url = 'order/change-order';
         return axiosClient.post(url, { orderID });
+    },
+
+    getCartByUser() {
+        const url = 'user/getCart';
+        return axiosClient.get(url)
     }
 };
 

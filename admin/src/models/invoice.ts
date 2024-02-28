@@ -26,3 +26,38 @@ export interface ProductInvoice {
     price: number;
     _id: string;
 }
+
+
+export interface DetailInvoice {
+    _id: string;
+    products: ProductOrder[];
+    status: string;
+    total: number;
+    orderBy: OrderBy;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
+export interface ProductOrder {
+    product: Product2;
+    quantity: number;
+    color: string;
+    _id: string;
+}
+
+export interface Product2 {
+    _id: string;
+    title: string;
+    thumb: string;
+    price: number;
+}
+
+
+export interface OrderBy {
+    _id: string;
+    name: string;
+    email: string;
+    mobile: string;
+    address: string;
+}

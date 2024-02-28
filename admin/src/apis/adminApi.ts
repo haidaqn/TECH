@@ -11,6 +11,11 @@ const adminApi = {
         return axiosClient.get(url);
     },
 
+    getDetailOrder(orderID:string) {
+        const url = `order/detail/${orderID}`
+        return axiosClient.get(url);
+    },
+
     hello() {
         const url = 'brand/hello';
         return axiosClient.get(url);

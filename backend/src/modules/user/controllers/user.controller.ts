@@ -33,9 +33,10 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('getCart/User')
+    @Get('getCart')
     async getCartUser(@Req() request: any) {
         const userID = (request.user._id as ObjectId).toString();
+        return await this.userService.getCart(userID);
     }
 
     @Post('forgotpassword')

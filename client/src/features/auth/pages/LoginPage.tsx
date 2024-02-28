@@ -1,5 +1,7 @@
+import authApi from '@/api/authApi';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
     Form,
     FormControl,
@@ -10,17 +12,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/inputPassword';
+import { useToast } from '@/components/ui/use-toast';
 import { LoginForm } from '@/models';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { authActions } from '../AuthSlice';
-import { useEffect, useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import authApi from '@/api/authApi';
 
 export function LoginPage() {
     const dispatch = useAppDispatch();

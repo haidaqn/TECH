@@ -63,6 +63,29 @@ const cartSlice = createSlice({
             state.lengthProduct -= quantity;
             if (localStorage.getItem('access_token')) updateCartAsync(newData);
         },
+
+        addCartDefault: (state, action: PayloadAction<CartItemData>) => {
+            const { color, id, quantity, add } = action.payload;
+            const existingProduct = state.dataStore.find(
+                (item) => item.color === color && item.id === id
+            );
+            if (existingProduct) {
+                if (add) {
+                    state.lengthProduct = state.lengthProduct - existingProduct.quantity + quantity;
+                    existingProduct.quantity = quantity;
+                } else {
+                    state.lengthProduct += quantity;
+                    existingProduct.quantity += quantity;
+                }
+            } else {
+                state.dataStore.push(action.payload);
+                state.lengthProduct += quantity;
+            }
+        },
+
+        addCartHome: (_, action: PayloadAction<CartItemData>) => {
+            updateCartAsync(action.payload);
+        },
     },
 });
 

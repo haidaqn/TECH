@@ -24,6 +24,11 @@ export class OrderController {
         return await this.orderService.updateOrder(oid, newStatus);
     }
 
+    @Get('detail/:oid')
+    async getDetailOrderByID(@Param('oid') oid: string) {
+        return await this.orderService.getDetail(oid)
+    }
+
     @UseGuards(AuthGuard('jwt'))
     @Post('createOrder')
     async createOrder(@Req() request: any, @Body() body: { coupon: number }) {
@@ -42,6 +47,6 @@ export class OrderController {
     async changeOrderByUser(@Req() request: any, @Body() body: { orderID: string }) {
         const { orderID } = body;
         const userId = (request.user._id as ObjectId).toString();
-        return await this.orderService.CancellOrderByUser(userId,orderID)
+        return await this.orderService.CancellOrderByUser(userId, orderID);
     }
 }

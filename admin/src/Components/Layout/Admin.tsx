@@ -6,6 +6,7 @@ import { HeaderAdmin } from '../Common/HeaderAdmin';
 import { Customer, InvoicePaging, Products } from '../../features/admin';
 import NewProduct from '../../features/admin/Components/newProduct';
 import UpdateProduct from '../../features/admin/Components/updateProduct';
+import UpdateInvoice from '../../features/admin/Components/updateInvoice';
 
 const WelComeAdmin = () => {
     return (
@@ -31,12 +32,13 @@ export default function Admin() {
             <HeaderAdmin />
             <Box sx={{ height: 'calc(100vh - 61px)' }} className="w-screen">
                 <Routes>
-                    <Route path="/" element={<WelComeAdmin />} />
+                    <Route path="/update/order/:orderID" element={<UpdateInvoice />} />
+                    <Route path="/update/product/:productId" element={<UpdateProduct />} />
+                    <Route path="/new/product" element={<NewProduct />} />
                     <Route path="/customer" element={<Customer />} />
                     <Route path="/invoice" element={<InvoicePaging />} />
                     <Route path="/products" element={<Products />} />
-                    <Route path="/new/product" element={<NewProduct />} />
-                    <Route path="/update/product/:productId" element={<UpdateProduct />} />
+                    <Route path="/" element={<WelComeAdmin />} />
                 </Routes>
             </Box>
         </Box>

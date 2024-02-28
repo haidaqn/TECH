@@ -5,7 +5,7 @@ import 'dayjs/locale/vi';
 import { MaterialReactTable, type MRT_ColumnDef, type MRT_ColumnFiltersState, type MRT_PaginationState, type MRT_SortingState } from 'material-react-table';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import History from '../../Router/History';
 import adminApi from '../../apis/adminApi';
 import { Invoice, ListResponse } from '../../models';
@@ -82,6 +82,7 @@ const CustomDialog: React.FC<CustomDialogProps> = ({ open, setOpen, orderSelect,
 
 export const InvoicePaging = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [data, setData] = useState<Invoice[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [opentDialog, setOpenDialog] = useState<boolean>(false);
@@ -90,7 +91,6 @@ export const InvoicePaging = () => {
     const [isError, setIsError] = useState(false);
     const [isRefetching, setIsRefetching] = useState(false);
     const [rowCount, setRowCount] = useState(0);
-    const { enqueueSnackbar } = useSnackbar();
     const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -98,26 +98,13 @@ export const InvoicePaging = () => {
         pageIndex: 0,
         pageSize: 10
     });
-    const [isDel, setIsDel] = useState(false);
+
     const [open, setOpen] = useState(false);
     const settingRef = useRef<HTMLButtonElement>(null);
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
-    const handleSelectRows = (row: any) => {
-        const idData = row.map((item: any) => item.original.id);
-        console.log(idData);
-        (async () => {
-            try {
-                // await adminApi.deleteFood(idData);
-                enqueueSnackbar('Xóa thành công', { variant: 'success' });
-                setIsDel((item) => !item);
-            } catch (error) {
-                enqueueSnackbar('Có lỗi xảy ra thử lại sau', { variant: 'error' });
-                console.log(error);
-            }
-        })();
-    };
+
     useEffect(() => {
         const fetchData = async () => {
             if (!data.length) {
@@ -148,7 +135,7 @@ export const InvoicePaging = () => {
             setIsRefetching(false);
         };
         fetchData();
-    }, [columnFilters, globalFilter, isDel, pagination.pageIndex, pagination.pageSize, sorting, isUpdate]);
+    }, [columnFilters, globalFilter, pagination.pageIndex, pagination.pageSize, sorting, isUpdate]);
     const columns = useMemo<MRT_ColumnDef<Invoice>[]>(
         () => [
             {
@@ -194,8 +181,7 @@ export const InvoicePaging = () => {
                 manualPagination
                 muiTableBodyRowProps={({ row }) => ({
                     onClick: () => {
-                        setorderSelect(row.original);
-                        setOpenDialog(true);
+                        navigate(`/admin/update/order/${row.original._id}`);
                     },
                     sx: { cursor: 'pointer' }
                 })}
@@ -216,12 +202,12 @@ export const InvoicePaging = () => {
                 })}
                 renderTopToolbarCustomActions={({ table }) => (
                     <Stack direction="row" alignItems="center">
-                        <Typography sx={{ fontSize: '22px', fontWeight: 500, mr: '10px',textTransform:'capitalize' }}>Hóa Đơn</Typography>
+                        <Typography sx={{ fontSize: '22px', fontWeight: 500, mr: '10px', textTransform: 'capitalize' }}>Hóa Đơn</Typography>
                         <IconButton ref={settingRef} onClick={handleToggle} size="small" sx={{ mr: '5px' }}>
                             <Settings htmlColor="black" fontSize="small" />
                         </IconButton>
                         {table.getSelectedRowModel().rows.length > 0 && (
-                            <IconButton size="small" sx={{ mr: '5px' }} onClick={() => handleSelectRows(table.getSelectedRowModel().rows)}>
+                            <IconButton size="small" sx={{ mr: '5px' }} onClick={() => {}}>
                                 <Delete fontSize="small" htmlColor="black" />
                             </IconButton>
                         )}
