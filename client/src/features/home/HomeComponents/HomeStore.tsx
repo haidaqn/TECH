@@ -54,7 +54,7 @@ export const HomeStore = () => {
                             Sản phẩm mới
                         </span>
                     </div>
-                    <div className="w-full mt-5">
+                    <div className="w-full mt-9  ">
                         {productNew ? <ProductNew /> : <ProductSold />}
                     </div>
                 </div>

@@ -29,7 +29,7 @@ export class ProductService {
 
         try {
             const sortCondition = sold
-                ? { totalRatings: -1, sold: -1, _id: -1, createdAt: -1 }
+                ? { sold: -1, totalRatings: -1, _id: -1, createdAt: -1 }
                 : { totalRatings: -1, _id: -1, createdAt: -1 };
             const count = await this.productRepository.countDocuments(searchCondition);
             const count_page = Math.ceil(count / limit);

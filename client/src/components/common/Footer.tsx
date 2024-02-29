@@ -133,16 +133,16 @@ export const Footer = () => {
                         <h1 className="px-3 border-l-[3px] border-red-700 uppercase text-lg font-medium">
                             Người sáng lập:
                         </h1>
-                        <ul>
+                        <ul className="flex gap-3">
                             <li>
-                                <a href="https://github.com/haidaqn?tab=repositories">haidaqn</a>
-                            </li>
-                            {/* <li>
-                                <a href="https://github.com/haidaqn?tab=repositories">haidaqn</a>
+                                <a href="https://github.com/haidaqn">haidaqn</a>
                             </li>
                             <li>
-                                <a href="https://github.com/haidaqn?tab=repositories">haidaqn</a>
-                            </li> */}
+                                <a href="https://github.com/Giang05072003">truonggiangvu</a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/tmquang0209">minhquang</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

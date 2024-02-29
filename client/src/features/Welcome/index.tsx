@@ -133,7 +133,7 @@ export default function Welcome() {
                                 <Typed
                                     strings={[
                                         'Chào mừng đến với ứng dụng cửa hàng công nghệ',
-                                        'Sản phẩm của Phương Hải Đăng',
+                                        'Sản phẩm của nhóm 7',
                                     ]}
                                     typeSpeed={60}
                                     backSpeed={40}

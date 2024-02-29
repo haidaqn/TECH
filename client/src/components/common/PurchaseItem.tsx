@@ -35,30 +35,30 @@ export const PurchaseItem = ({
         idProduct: '',
     });
 
-    const [openDialogs, setOpenDialogs] = useState<{ [productId: string]: boolean }>({});
+    const [openDialogs, setOpenDialogs] = useState<{
+        [key: string]: boolean;
+    }>({});
 
-    const openDialog = (productId: string) => {
+    const openDialog = (productId: string, index: number) => {
         setOpenDialogs((prevState) => ({
             ...prevState,
-            [productId]: true,
+            [`${productId}-${index}`]: true,
         }));
     };
 
-    const closeDialog = (productId: string) => {
-        setOpenDialogs((prevState) => ({
-            ...prevState,
-            [productId]: false,
-        }));
+    const closeDialog = (productId: string, index: number) => {
+        setOpenDialogs((prevState) => {
+            const updatedState = { ...prevState };
+            delete updatedState[`${productId}-${index}`];
+            return updatedState;
+        });
     };
 
     const handleCreateRating = async () => {
         try {
             await ProductApi.createComment(comment)
                 .then(() => {
-                    setOpenDialogs((prevState) => ({
-                        ...prevState,
-                        [comment.idProduct]: false,
-                    }));
+                    setOpenDialogs({});
                     setComment({ star: 0, comment: '', idProduct: '' });
                     toast({
                         title: 'Đánh giá thành công!',
@@ -66,10 +66,8 @@ export const PurchaseItem = ({
                     });
                 })
                 .catch((err: any) => {
-                    setOpenDialogs((prevState) => ({
-                        ...prevState,
-                        [comment.idProduct]: false,
-                    }));
+                    setOpenDialogs({});
+                    setComment({ star: 0, comment: '', idProduct: '' });
                     toast({
                         title: 'Đánh giá không thành công!',
                         description: err.message,
@@ -77,10 +75,8 @@ export const PurchaseItem = ({
                     });
                 });
         } catch (error: any) {
-            setOpenDialogs((prevState) => ({
-                ...prevState,
-                [comment.idProduct]: false,
-            }));
+            setOpenDialogs({});
+            setComment({ star: 0, comment: '', idProduct: '' });
             toast({
                 title: 'Đánh giá không thành công!',
                 description: error.message,
@@ -110,11 +106,11 @@ export const PurchaseItem = ({
             <Card className="p-4">
                 {products.map((product, index) => (
                     <Dialog
-                        open={openDialogs[product.product._id]}
+                        open={openDialogs[`${product.product._id}-${index}`]}
                         onOpenChange={(isOpen) =>
                             isOpen
-                                ? openDialog(product.product._id)
-                                : closeDialog(product.product._id)
+                                ? openDialog(product.product._id, index)
+                                : closeDialog(product.product._id, index)
                         }
                         key={product.product._id + index}
                     >
@@ -133,22 +129,24 @@ export const PurchaseItem = ({
                                 </span>
                             </div>
                             <div className="flex-1 flex justify-end text-red-600">
-                                <div className="flex flex-col justify-between">
+                                <div className="flex flex-col justify-between items-center">
                                     <span>{handlePrice(product.product.price)}</span>
-                                    {status === 'Success' && (
-                                        <button
-                                            onClick={() => {
-                                                setComment((prev) => ({
-                                                    ...prev,
-                                                    idProduct: product.product._id,
-                                                }));
-                                                openDialog(product.product._id);
-                                            }}
-                                            className="bg-gray-500 w-fit px-4 py-1 rounded-lg text-white capitalize hover:opacity-70"
-                                        >
-                                            đánh giá
-                                        </button>
-                                    )}
+                                    <div className='flex w-full justify-end'>
+                                        {status === 'Success' && (
+                                            <button
+                                                onClick={() => {
+                                                    setComment((prev) => ({
+                                                        ...prev,
+                                                        idProduct: product.product._id,
+                                                    }));
+                                                    openDialog(product.product._id, index);
+                                                }}
+                                                className="bg-gray-500 w-fit px-4 py-1 rounded-lg text-white capitalize hover:opacity-70"
+                                            >
+                                                đánh giá
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

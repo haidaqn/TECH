@@ -23,12 +23,13 @@ export const Auth = () => {
                     <div className="relative z-20 mt-auto">
                         <blockquote className="space-y-2">
                             <p className="text-lg">
-                                &ldquo;Welcome to haidaqn, your destination for cutting-edge gadgets
-                                and technology marvels! Nestled at the intersection of innovation
-                                and customer satisfaction, haidaqn is not just a store; it's an
-                                experience. As a premier establishment in the realm of technology
-                                retail, we take pride in curating a selection that encompasses the
-                                latest trends and top-tier brands.&rdquo;
+                                &ldquo;Welcome to technology store, your destination for
+                                cutting-edge gadgets and technology marvels! Nestled at the
+                                intersection of innovation and customer satisfaction, technology
+                                store is not just a store; it's an experience. As a premier
+                                establishment in the realm of technology retail, we take pride in
+                                curating a selection that encompasses the latest trends and top-tier
+                                brands.&rdquo;
                             </p>
                             <footer className="text-sm">
                                 <a href="https://github.com/haidaqn">haidaqn</a>

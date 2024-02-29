@@ -16,12 +16,12 @@ export const ProductItem = (props: Product) => {
     return (
         <Card
             onClick={() => handleNavigateDetailProduct(_id)}
-            className="bg-white rounded-sm  max-h-[420px] shadow min-h-[300px] h-[355px] flex items-center justify-center cursor-pointer flex-col gap-3 "
+            className="bg-white rounded-sm overflow-hidden  max-h-[420px] shadow min-h-[300px] h-[355px] flex items-center justify-center cursor-pointer flex-col gap-3 "
         >
             <img
                 src={thumb}
                 alt=""
-                className="bg-center bg-cover w-[70%] p-6 transition-transform transform hover:scale-110"
+                className="bg-center bg-cover w-[73%] p-6 transition-transform transform hover:scale-110"
             />
             <CardFooter className={`${theme === 'dark' && 'text-black'} flex flex-col gap-2`}>
                 <span
