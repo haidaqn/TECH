@@ -14,6 +14,9 @@ export const DayDetail = () => {
 
     const [payload, SetPayload] = useState<TypeTime>({ hour: 0, minutes: 0, seconds: 0 });
     const [expireTime, setExpireTime] = useState<boolean>(false);
+
+    if (!productNew) return null;
+
     const { title, thumb, price, totalRatings, _id } = productNew[0];
 
     const navigate = useNavigate();
