@@ -66,19 +66,19 @@ export class AuthService {
             const { data, token } = dataRegister;
             if (!cookie || token !== tokenURL) {
                 res.clearCookie('dataRegister');
-                return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
+                return res.redirect('https://localhost:5173/finalregister/failed');
             } else {
                 try {
                     await this.userService.createUser(data);
                     res.clearCookie('dataRegister');
-                    return res.redirect('https://tech-three-beta.vercel.app/finalregister/success');
+                    return res.redirect('https://localhost:5173/finalregister/success');
                 } catch (error) {
                     res.clearCookie('dataRegister');
-                    return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
+                    return res.redirect('https://localhost:5173/finalregister/failed');
                 }
             }
         } catch (error) {
-            return res.redirect('https://tech-three-beta.vercel.app/finalregister/failed');
+            return res.redirect('https://localhost:5173/finalregister/failed');
         }
     };
 

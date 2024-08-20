@@ -2,9 +2,10 @@ import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards } from '
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
-import { ChangePasswordUser, CreateUserDto, LoginUserDto } from '../dto/user.dto';
+import { ChangePasswordUser, CreateUserDto, LoginUserDto, refreshTokenDto, sendMailDto } from '../dto/user.dto';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -30,7 +31,7 @@ export class AuthController {
     }
 
     @Post('refresh')
-    async refresh(@Body() body: { refresh_token: string }) {
+    async refresh(@Body() body: refreshTokenDto) {
         const { refresh_token } = body;
         return await this.authService.refresh(refresh_token);
     }
@@ -57,7 +58,7 @@ export class AuthController {
     }
 
     @Post('sendmail-toast')
-    async sendMailToast(@Body() { data }: { data: string }) {
-        return await this.authService.sendMailToast(data);
+    async sendMailToast(@Body() data: sendMailDto) {
+        return await this.authService.sendMailToast(data.email);
     }
 }

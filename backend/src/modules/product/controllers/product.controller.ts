@@ -1,14 +1,24 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectId } from 'mongoose';
-import { Comment, PaginationProductDto, ProductDto } from '../dto/product.dto';
+import { Comment, deleteMutipleProduct, PaginationProductDto, ProductDto } from '../dto/product.dto';
 import { ProductService } from '../services/product.service';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('product')
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get('getAll')
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    @ApiQuery({ name: 'title', required: false, type: String })
+    @ApiQuery({ name: 'priceTo', required: false, type: Number })
+    @ApiQuery({ name: 'priceEnd', required: false, type: Number })
+    @ApiQuery({ name: 'color', required: false, type: String })
+    @ApiQuery({ name: 'sold', required: false, type: Number })
+    @ApiQuery({ name: 'category', required: false, type: String })
+    @ApiQuery({ name: 'search', required: false, type: String })
     async getAllProduct(
         @Query() { page, limit, title, priceTo, priceEnd, color, sold, category, search }: PaginationProductDto
     ) {
@@ -36,9 +46,8 @@ export class ProductController {
     }
 
     @Delete('delete')
-    async deleteProduct(@Body() body) {
-        // console.log(body);
-        return await this.productService.deleteMutipleProduct(body);
+    async deleteProduct(@Body() data: deleteMutipleProduct) {
+        return await this.productService.deleteMutipleProduct(data.ids);
     }
 
     @Patch('update/:id')

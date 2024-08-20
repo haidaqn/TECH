@@ -1,25 +1,33 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectId } from 'mongoose';
-import { PagingOrder } from '../dto/order.dto';
+import { DeleteMultipleProductDto, orderID, PagingOrder, updateStatusDto } from '../dto/order.dto';
 import { OrderService } from '../services/order.service';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('order')
 export class OrderController {
     constructor(private readonly orderService: OrderService) {}
     @Get('admin/getAll')
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    @ApiQuery({ name: 'status', required: false, type: String })
     async getAllOrderByAdmin(@Query() { page, limit, status }: PagingOrder) {
         return await this.orderService.getAllOrderByAdmin(page, limit, status);
     }
+
     @UseGuards(AuthGuard('jwt'))
     @Get('user/getAll')
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    @ApiQuery({ name: 'status', required: false, type: String })
     async getAllOrderByUser(@Query() { page, limit, status }: PagingOrder, @Req() request: any) {
         const userId = (request.user._id as ObjectId).toString();
         return await this.orderService.getAllOrderByUserId(page, limit, status, userId);
     }
 
     @Post('updateStatus/:oid')
-    async updateOrder(@Param('oid') oid: string, @Body() body: { newStatus: string }) {
+    async updateOrder(@Param('oid') oid: string, @Body() body: updateStatusDto) {
         const { newStatus } = body;
         return await this.orderService.updateOrder(oid, newStatus);
     }
@@ -31,20 +39,20 @@ export class OrderController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('createOrder')
-    async createOrder(@Req() request: any, @Body() body: { coupon: number }) {
+    async createOrder(@Req() request: any, @Body() body: { coupon?: number }) {
         const userId = (request.user._id as ObjectId).toString();
-        const { coupon } = body;
+        const { coupon = 0 } = body;
         return await this.orderService.createOrder(userId, coupon);
     }
 
     @Delete('delete')
-    async deleteMutipleOrder(@Body() body) {
-        return await this.orderService.deleteMutipleOrder(body as string[]);
+    async deleteMutipleOrder(@Body() body: DeleteMultipleProductDto) {
+        return await this.orderService.deleteMutipleOrder(body.ids);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('change-order')
-    async changeOrderByUser(@Req() request: any, @Body() body: { orderID: string }) {
+    async changeOrderByUser(@Req() request: any, @Body() body: orderID) {
         const { orderID } = body;
         const userId = (request.user._id as ObjectId).toString();
         return await this.orderService.CancellOrderByUser(userId, orderID);

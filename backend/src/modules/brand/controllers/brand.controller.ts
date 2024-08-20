@@ -1,12 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BrandDto, PaginationBrandDto } from '../dto/brand.dto';
 import { BrandService } from '../services/brand.service';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('brand')
 export class BrandController {
     constructor(private readonly brandService: BrandService) {}
 
     @Get('getAll')
+    @ApiQuery   ({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
     async getAllBrand(@Query() { page, limit }: PaginationBrandDto) {
         return await this.brandService.GetAllBrand(page, limit);
     }
