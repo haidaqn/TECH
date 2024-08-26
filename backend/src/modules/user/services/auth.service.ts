@@ -29,7 +29,7 @@ export class AuthService {
                 maxAge: 5 * 60 * 1000
             });
 
-            const verifyLink = `'https://localhost:5173/auth/finalRegister/${token}`;
+            const verifyLink = `http://localhost:5173/auth/finalRegister/${token}`;
             const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký tài khoản của bạn. Link này sẽ hết hạn sau 5 phút kể từ bây giờ. <a href="${verifyLink}">Click here</a>`;
 
             const subject = 'Xác minh tài khoản';
@@ -38,7 +38,7 @@ export class AuthService {
                 html,
                 subject
             };
-            await this.sendVerifyEnmail(data);
+            await this.sendVerifyEnmail(data)
             return true;
         } catch (error: any) {
             throw new Error(error.message);
@@ -66,19 +66,19 @@ export class AuthService {
             const { data, token } = dataRegister;
             if (!cookie || token !== tokenURL) {
                 res.clearCookie('dataRegister');
-                return res.redirect('https://localhost:5173/finalregister/failed');
+                return res.redirect('http://localhost:5173/finalregister/failed');
             } else {
                 try {
                     await this.userService.createUser(data);
                     res.clearCookie('dataRegister');
-                    return res.redirect('https://localhost:5173/finalregister/success');
+                    return res.redirect('http://localhost:5173/finalregister/success');
                 } catch (error) {
                     res.clearCookie('dataRegister');
-                    return res.redirect('https://localhost:5173/finalregister/failed');
+                    return res.redirect('http://localhost:5173/finalregister/failed');
                 }
             }
         } catch (error) {
-            return res.redirect('https://localhost:5173/finalregister/failed');
+            return res.redirect('http://localhost:5173/finalregister/failed');
         }
     };
 

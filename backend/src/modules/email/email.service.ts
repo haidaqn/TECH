@@ -6,7 +6,7 @@ import { EmailDto } from './email.dto';
 export class EmailService {
     constructor(private readonly mailerService: MailerService) {}
     sendMail(data: EmailDto) {
-        this.mailerService.sendMail({
+        return this.mailerService.sendMail({
             to: data.to,
             subject: data.subject,
             text: data?.text,
