@@ -100,6 +100,7 @@ export class OrderService {
 
     async createOrder(userID: string, coupon?: number) {
         try {
+            coupon = 0;
             const userCart = (await this.userService.getCart(userID)) as unknown as ItemCart[];
             if (!userCart) throw new Error('Missing user cart');
             let total = userCart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -110,7 +111,7 @@ export class OrderService {
                 color: item.color
             }));
             await this.orderRepository
-                .create({ products: product, total, coupon, orderBy: userID })
+                .create({ products: product, total, orderBy: userID })
                 .then(async () => {
                     const res = await this.userService.resetCart(userID);
                     return res ? true : false;

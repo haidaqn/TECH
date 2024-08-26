@@ -41,8 +41,7 @@ export class OrderController {
     @Post('createOrder')
     async createOrder(@Req() request: any, @Body() body: { coupon?: number }) {
         const userId = (request.user._id as ObjectId).toString();
-        const { coupon = 0 } = body;
-        return await this.orderService.createOrder(userId, coupon);
+        return await this.orderService.createOrder(userId, 0);
     }
 
     @Delete('delete')

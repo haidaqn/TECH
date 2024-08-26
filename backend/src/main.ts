@@ -11,7 +11,7 @@ async function bootstrap() {
     app.use(cookieParser());
 
     const options: CorsOptions = {
-        origin: ['https://tech-eta-three.vercel.app/', 'https://haidaqn.vercel.app/'],
+        origin: true,
         credentials: true,
     };
 
