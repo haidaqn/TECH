@@ -18,28 +18,8 @@ export class AuthService {
 
     register = async (userDto: CreateUserDto, res: Response, req: Request) => {
         try {
-            const user = await this.checkEmailUser(userDto.email);
-            if (user.success === true) throw new Error('Tài khoản đã tồn tại');
-            const token = await this.makeToken();
-            const cookieHeader = JSON.stringify({ data: userDto, token });
-            res.cookie('dataRegister', cookieHeader, {
-                httpOnly: true,
-                sameSite: 'none',
-                secure: true,
-                maxAge: 5 * 60 * 1000
-            });
+            await this.userService.createUser(userDto);
 
-            const verifyLink = `http://localhost:5173/auth/finalRegister/${token}`;
-            const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký tài khoản của bạn. Link này sẽ hết hạn sau 5 phút kể từ bây giờ. <a href="${verifyLink}">Click here</a>`;
-
-            const subject = 'Xác minh tài khoản';
-            const data = {
-                to: userDto.email,
-                html,
-                subject
-            };
-            await this.sendVerifyEnmail(data)
-            return true;
         } catch (error: any) {
             throw new Error(error.message);
         }

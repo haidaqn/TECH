@@ -58,7 +58,7 @@ export const RegisterPage = () => {
                 .then(() => {
                     formRegister.reset();
                     toast({
-                        title: `Vui lòng kiểm tra email ${data.email}`,
+                        title: "Đăng ký thành công",
                     });
                 })
                 .catch((error: any) => {

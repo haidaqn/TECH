@@ -18,10 +18,13 @@ export class UserService {
     async createUser(userDto: CreateUserDto) {
         userDto.password = await bcrypt.hash(userDto.password, 10);
         const userInDb = await this.userRepository.findByCondition({
-            email: userDto.email
+            $or: [
+                { email: userDto.email },
+                { mobile: userDto.mobile }
+            ]
         });
         if (userInDb) {
-            throw new HttpException('Email already used to register', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Email or Mobile already used to register', HttpStatus.BAD_REQUEST);
         }
         return await this.userRepository.create(userDto);
     }
